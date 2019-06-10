@@ -46,7 +46,7 @@ typedef struct try_jb_s {
   int               ln;
   int               ex;
   int16_t           id;
-  int16_t           flg;
+  int16_t           nn;
 } try_jb_t;
 
 extern try_jb_t *try_jmp_list;
@@ -58,22 +58,20 @@ extern char *try_emptystring;
 #ifdef TRY_MAIN
   try_main;
 #endif
+
 #define CATCH_HANDLER 0
 
-#define try_INIT  {.prv = try_jmp_list, .flg = 0, .ex =0, \
-                   .fn = try_emptystring, .ln = 0, .id = 0 }
+#define try_INIT     {.prv = try_jmp_list, .nn = 0, .fn = try_emptystring, .ln = 0, .id = 0}
 
 #define try          for ( try_jb_t try_jb = try_INIT; \
-                          (try_jb.flg-- <= 0) && (try_jmp_list = &try_jb); \
-                           try_jmp_list = try_jb.prv, try_jb.flg = (try_jb.ex == 0? 2 : try_jb.flg)) \
-                            if (try_jb.flg < -1) assert(CATCH_HANDLER); \
+                          (try_jb.nn-- <= 0) && (try_jmp_list = &try_jb); \
+                           try_jmp_list = try_jb.prv, try_jb.nn = (try_jb.ex == 0? 2 : try_jb.nn)) \
+                            if (try_jb.nn < -1) assert(CATCH_HANDLER); \
                        else if (((try_jb.ex = setjmp(try_jb.jmp)) == 0)) 
 
-#define catch(x)       else if ((try_jb.ex & (x)) && \
-                                 (try_jmp_list=try_jb.prv, try_jb.flg=2)) 
+#define catch(x)       else if ((try_jb.ex & (x)) && (try_jmp_list=try_jb.prv, try_jb.nn=2)) 
 
-#define catchall       else for ( try_jmp_list=try_jb.prv; \
-                                  try_jb.flg == -1; try_jb.flg=2) 
+#define catchall       else for ( try_jmp_list=try_jb.prv; try_jb.nn < 0; try_jb.nn=2) 
 
 #define throw2(x,y) do { int ex_ = x; \
                          if (ex_ > 0 && try_jmp_list) {\
@@ -86,8 +84,7 @@ extern char *try_emptystring;
 
 #define try_0(x,...)   x
 #define try_1(x,y,...) y
-#define throw(...)   throw2(try_0(__VA_ARGS__,-1),\
-                            try_1(__VA_ARGS__,0,0))
+#define throw(...)   throw2(try_0(__VA_ARGS__,1), try_1(__VA_ARGS__,0,0))
 
 #define rethrow()    throw2(try_jb.ex,try_jb.id)
 #define thrown()     try_jb.ex

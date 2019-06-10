@@ -21,9 +21,10 @@ int main(int argc,char *argv[])
     fflush(stdout);
   }
 
-
   try {
     throw(EXCEPTION_00);
+    printf("NO ERROR\n");
+    fflush(stdout);
   }
   catch(EXCEPTION_00) {
     printf("EXCEPTION 0\n");
@@ -36,6 +37,8 @@ int main(int argc,char *argv[])
 
   try {
     throw(EXCEPTION_01);
+    printf("NO ERROR\n");
+    fflush(stdout);
   }
   catch(EXCEPTION_00) {
     printf("EXCEPTION 0\n");
@@ -43,14 +46,6 @@ int main(int argc,char *argv[])
   }
   catchall {
     printf("EXCEPTION %08X\n",thrown());
-    fflush(stdout);
-  }
-
-  try {
-    throw(EXCEPTION_01);
-  }
-  catch(EXCEPTION_00) {
-    printf("EXCEPTION 0\n");
     fflush(stdout);
   }
 
