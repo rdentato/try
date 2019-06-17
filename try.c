@@ -1,0 +1,3 @@
+#include "try.h"
+
+trymain;
