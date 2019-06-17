@@ -18,7 +18,7 @@ int main(int argc,char *argv[])
     printf("NO ERROR\n");
     fflush(stdout);
   }
-  catch(EXCEPTION_00) {
+  catch(EXCEPTION(0)) {
     printf("EXCEPTION 0\n");
     fflush(stdout);
   }
@@ -28,11 +28,11 @@ int main(int argc,char *argv[])
   }
 
   try {
-    function_1(EXCEPTION_00);
+    function_1(EXCEPTION(0));
     printf("NO ERROR\n");
     fflush(stdout);
   }
-  catch(EXCEPTION_00) {
+  catch(EXCEPTION(0)) {
     printf("EXCEPTION 0\n");
     fflush(stdout);
   }
@@ -42,11 +42,11 @@ int main(int argc,char *argv[])
   }
 
   try {
-    function_1(EXCEPTION_01);
+    function_1(EXCEPTION(1));
     printf("NO ERROR\n");
     fflush(stdout);
   }
-  catch(EXCEPTION_00) {
+  catch(EXCEPTION(0)) {
     printf("EXCEPTION 0\n");
     fflush(stdout);
   }
