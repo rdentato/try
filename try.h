@@ -49,10 +49,17 @@ typedef struct try_jb_s {
   int16_t           nn;
 } try_jb_t;
 
-extern try_jb_t *try_jmp_list;
+
+#ifdef _MSC_VER
+  #define TRY_THREAD __declspec( thread )
+#else
+  #define TRY_THREAD __thread
+#endif
+
+extern TRY_THREAD try_jb_t *try_jmp_list;
 extern char *try_emptystring;
 
-#define try_main   try_jb_t *try_jmp_list=NULL; \
+#define try_main   TRY_THREAD try_jb_t *try_jmp_list=NULL; \
                    char *try_emptystring = ""
 
 #ifdef TRY_MAIN
@@ -92,37 +99,6 @@ extern char *try_emptystring;
 #define thrownfile() try_jb.fn
 #define thrownline() try_jb.ln
 
-#define EXCEPTION_00 0x00000001
-#define EXCEPTION_01 0x00000002
-#define EXCEPTION_02 0x00000004
-#define EXCEPTION_03 0x00000008
-#define EXCEPTION_04 0x00000010
-#define EXCEPTION_05 0x00000020
-#define EXCEPTION_06 0x00000040
-#define EXCEPTION_07 0x00000080
-#define EXCEPTION_08 0x00000100
-#define EXCEPTION_09 0x00000200
-#define EXCEPTION_10 0x00000400
-#define EXCEPTION_11 0x00000800
-#define EXCEPTION_12 0x00001000
-#define EXCEPTION_13 0x00002000
-#define EXCEPTION_14 0x00004000
-#define EXCEPTION_15 0x00008000
-#define EXCEPTION_16 0x00010000
-#define EXCEPTION_17 0x00020000
-#define EXCEPTION_18 0x00040000
-#define EXCEPTION_19 0x00080000
-#define EXCEPTION_20 0x00100000
-#define EXCEPTION_21 0x00200000
-#define EXCEPTION_22 0x00400000
-#define EXCEPTION_23 0x00800000
-#define EXCEPTION_24 0x01000000
-#define EXCEPTION_25 0x02000000
-#define EXCEPTION_26 0x04000000
-#define EXCEPTION_27 0x08000000
-#define EXCEPTION_28 0x10000000
-#define EXCEPTION_29 0x20000000
-#define EXCEPTION_30 0x40000000
-
+#define EXCEPTION(n)  ((1<<(n &0x1F)) & 0x7FFFFFFF)
 
 #endif
