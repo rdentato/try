@@ -1,0 +1,17 @@
+sudo: required
+language: c
+script: make runtest
+install: true
+compiler:
+  - clang
+  - gcc
+os:
+  - linux
+  - osx
+notifications:
+  webhooks:
+    urls: 
+    on_success: always  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: never     # options: [always|never|change] default: always
+
