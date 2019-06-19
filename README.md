@@ -83,7 +83,7 @@ See the test `test\ltest1.c` for an example.
 ```
 Remember to never leave a try/catch block with return, goto or break!
 
-### Trhowing exceptions.
+### Throwing exceptions.
 
 ```
   throw(exc [, id])   Throws an exception (a positive integer).
@@ -99,7 +99,7 @@ Remember to never leave a try/catch block with return, goto or break!
                       identifier (the second parameter of the throw() function)
 
   thrownfile()        Only usable in a catch block to retrieve the filename
-  thrownlone()        and the line of the try/catch block that genereated the
+  thrownline()        and the line of the try/catch block that genereated the
                       exception. Useful to print a more meaningful error message
 ```
 
