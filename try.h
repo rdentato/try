@@ -35,6 +35,7 @@
 
 #ifndef TRY_H__
 #define TRY_H__
+#include <stdio.h>
 #include <setjmp.h>
 #include <assert.h>
 #include <stdint.h>
