@@ -87,7 +87,7 @@ Remember to never leave a try/catch block with return, goto or break!
 
 ```
   throw(exc [, id])   Throws an exception (a positive integer).
-                      An optional "id" code (an integer between -16384 and
+                      An optional "identifier" (an integer between -16384 and
                       16383) can be specified to provide additional info.
 
   rethrow()           Only usable in a catch block to throw the same exception.
@@ -98,8 +98,8 @@ Remember to never leave a try/catch block with return, goto or break!
   thrownid()          Only usable in a catch block to retrieve the exception
                       identifier (the second parameter of the throw() function)
 
-  thrownfn()          Only usable in a catch block to retrieve the filename
-  thrownln()          and the line of the try/catch block that genereated the
+  thrownfile()        Only usable in a catch block to retrieve the filename
+  thrownlone()        and the line of the try/catch block that genereated the
                       exception. Useful to print a more meaningful error message
 ```
 
