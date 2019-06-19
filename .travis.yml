@@ -1,6 +1,6 @@
 sudo: required
 language: c
-script: make runtest
+script: bash ./runtest.sh
 install: true
 compiler:
   - clang
