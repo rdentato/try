@@ -60,4 +60,47 @@ See the test `test\test1.c` for an example.
 
 See the test `test\ltest1.c` for an example.
  
+## Reference
+
+### Try/Catch
+
+``` C
+  try {
+     // Block of code that could potentially
+     // throw() and exception. Possibly generated
+     // in a function called by this block
+  }
+  catch(exception) { 
+     // Block of code that is executed if the specified
+     // exception is thrown within the try block
+  }
+  catchall {
+     // Block of code that is executed if no other handler
+     // catches the exception. It is highly reccomended to 
+     // ALWAYS have a catchall block; unhandled exceptions
+     // will make the program abort().
+  }
+```
+Remember to never leave a try/catch block with return, goto or break!
+
+### Trhowing exceptions.
+
+```
+  throw(exc [, id])   Throws an exception (a positive integer).
+                      An optional "id" code (an integer between -16384 and
+                      16383) can be specified to provide additional info.
+
+  rethrow()           Only usable in a catch block to throw the same exception.
+
+  thrown()            Only usable in a catch block to retrieve the exception
+                      that has been caught. Only useful in a catchall block).
+
+  thrownid()          Only usable in a catch block to retrieve the exception
+                      identifier (the second parameter of the throw() function)
+
+  thrownfn()          Only usable in a catch block to retrieve the filename
+  thrownln()          and the line of the try/catch block that genereated the
+                      exception. Useful to print a more meaningful error message
+```
+
 
