@@ -1,19 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TRY_MAIN
+#include "trytest.h"
 #include "try.h"
+
+try_t maintry;
 
 int function_1(int exc)
 {
    if (exc) {
      try {
        throw(exc,1);
+       tstout("FAIL: No Exception!");
      } 
      catchall {
-      printf("EXCEPTION %08X in function_1\n",thrown());
-      fflush(stdout);   
+       tstout("PASS: Exception caught");
      }
+     tstout("PASS: Should not be re-rised");
    }
    return exc;
 }
@@ -23,12 +26,14 @@ int function_2(int exc)
    if (exc) {
      try {
        throw(exc,2);
+       tstout("FAIL: No Exception!");
      } 
      catchall {
-      printf("EXCEPTION %08X in function_2\n",thrown());
-      fflush(stdout);   
-      rethrow();
+       tstout("PASS: Exception caught");
+       rethrow();
+       tstout("FAIL: Should be re-rised");
      }
+     tstout("FAIL: Should be re-rised");
    }
    return exc;
 }
@@ -36,26 +41,22 @@ int function_2(int exc)
 int main(int argc,char *argv[])
 {
   int ret = 0;
+
   try {
-    ret = function_1(EXCEPTION_00);
-    printf("NO ERROR (%d)\n",ret);
-    fflush(stdout);
+    ret = function_1(EX_OUTOFMEM);
+    tstout("PASS: No Exception (function return: %d)",ret);
   }
   catchall {
-    printf("EXCEPTION %08X in main\n",thrown());
-    fflush(stdout);
+    tstout("FAIL: GOT EXCEPTION %d,%d. (all)", thrown(),thrownid());
   }
 
   try {
-    ret = function_2(EXCEPTION_01);
-    printf("NO ERROR (%d)\n",ret);
-    fflush(stdout);
+    ret = function_2(EX_NOFILE);
+    tstout("FAIL: No Exception (function return: %d)",ret);
   }
   catchall {
-    printf("EXCEPTION %08X in main\n",thrown());
-    fflush(stdout);
+    tstout("PASS: GOT EXCEPTION %d,%d. (all)", thrown(),thrownid());
   }
-
 
   exit(0);
 }

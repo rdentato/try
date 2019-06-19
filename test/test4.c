@@ -1,53 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "trytest.h"
 #include "try.h"
 
-try_main;
+try_t maintry;
 
 int main(int argc,char *argv[])
 {
 
   try {
-    throw(EXCEPTION_00);
-    printf("NO ERROR\n");
-    fflush(stdout);
-  }
-  catch(EXCEPTION_00 | EXCEPTION_01) {
-    printf("EXCEPTION 0 or 1 (%d)\n",thrown());
-    fflush(stdout);
+    try {
+      tstout("PASS: Trying something else");
+      throw(EX_OUTOFMEM);  
+      tstout("FAIL: Should have rised an exception!");
+    }
+    catchall {
+      tstout("PASS: GOT EXCEPTION %d. (nested)", thrown());
+    }
+    tstout("PASS: Try completed");
   }
   catchall {
-    printf("EXCEPTION %08X\n",thrown());
-    fflush(stdout);
+    tstout("FAIL: GOT EXCEPTION %d. (main)", thrown());
   }
 
   try {
-    throw(EXCEPTION_01);
-    printf("NO ERROR\n");
-    fflush(stdout);
-  }
-  catch(EXCEPTION_00 | EXCEPTION_01) {
-    printf("EXCEPTION 0 or 1 (%d)\n",thrown());
-    fflush(stdout);
-  }
-  catchall {
-    printf("EXCEPTION %08X\n",thrown());
-    fflush(stdout);
-  }
-
-  try {
-    throw(EXCEPTION_02);
-    printf("NO ERROR\n");
-    fflush(stdout);
-  }
-  catch(EXCEPTION_00 | EXCEPTION_01) {
-    printf("EXCEPTION 0 or 1 (%d)\n",thrown());
-    fflush(stdout);
+    try {
+      tstout("PASS: Trying something else");
+      throw(EX_OUTOFMEM);  
+      tstout("FAIL: Should have rised an exception!");
+    }
+    catchall {
+      tstout("PASS: GOT EXCEPTION %d. (nested)", thrown());
+      rethrow();
+      tstout("FAIL: Should have rised an exception!");
+    }
+    tstout("FAIL: Try completed?");
   }
   catchall {
-    printf("EXCEPTION %08X\n",thrown());
-    fflush(stdout);
+    tstout("PASS: GOT EXCEPTION %d. (main)", thrown());
   }
 
 

@@ -4,22 +4,13 @@
 #include "trytest.h"
 #include "try.h"
 
-try_t maintry;
-
-int function_1(int exc)
-{
-   if (exc) throw(exc,1);
-   return exc;
-}
-
 int main(int argc,char *argv[])
 {
 
   try {
-    function_1(EX_NONE);
     tstout("PASS: No Exception");
   }
-  catch(EX_OUTOFMEM) {
+  catch(24) {
     tstout("FAIL: GOT EXCEPTION %d.", thrown());
   }
   catchall {
@@ -27,10 +18,10 @@ int main(int argc,char *argv[])
   }
 
   try {
-    function_1(EX_OUTOFMEM);
-    tstout("FAIL: No Exception!");
+    throw(24);
+    tstout("FAIL: Should not be here\n");
   }
-  catch(EX_OUTOFMEM) {
+  catch(24) {
     tstout("PASS: GOT EXCEPTION %d.", thrown());
   }
   catchall {
@@ -38,15 +29,14 @@ int main(int argc,char *argv[])
   }
 
   try {
-    function_1(EX_NOFILE);
-    tstout("FAIL: No Exception!");
+    throw(25);
+    tstout("FAIL: Should not be here\n");
   }
-  catch(EX_OUTOFMEM) {
+  catch(24) {
     tstout("FAIL: GOT EXCEPTION %d.", thrown());
   }
   catchall {
     tstout("PASS: GOT EXCEPTION %d. (all)", thrown());
   }
-
   exit(0);
 }

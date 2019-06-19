@@ -1,53 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "trytest.h"
 #include "try.h"
 
-try_main;
+try_t maintry;
 
 int main(int argc,char *argv[])
 {
 
   try {
-    printf("NO ERROR\n");
-    fflush(stdout);
+    tstout("PASS: No Exception");
   }
-  catch(EXCEPTION(0)) {
-    printf("EXCEPTION 0\n");
-    fflush(stdout);
+  catch(24) {
+    tstout("FAIL: GOT EXCEPTION %d.", thrown());
   }
   catchall {
-    printf("EXCEPTION %08X\n",thrown());
-    fflush(stdout);
+    tstout("FAIL: GOT EXCEPTION %d. (all)", thrown());
   }
 
   try {
-    throw(EXCEPTION(0));
-    printf("NO ERROR\n");
-    fflush(stdout);
+    throw(24);
+    tstout("FAIL: Should not be here\n");
   }
-  catch(EXCEPTION(0)) {
-    printf("EXCEPTION 0\n");
-    fflush(stdout);
+  catch(24) {
+    tstout("PASS: GOT EXCEPTION %d.", thrown());
   }
   catchall {
-    printf("EXCEPTION %08X\n",thrown());
-    fflush(stdout);
+    tstout("FAIL: GOT EXCEPTION %d. (all)", thrown());
   }
 
   try {
-    throw(EXCEPTION(1));
-    printf("NO ERROR\n");
-    fflush(stdout);
+    throw(25);
+    tstout("FAIL: Should not be here\n");
   }
-  catch(EXCEPTION(0)) {
-    printf("EXCEPTION 0\n");
-    fflush(stdout);
+  catch(24) {
+    tstout("FAIL: GOT EXCEPTION %d.", thrown());
   }
   catchall {
-    printf("EXCEPTION %08X\n",thrown());
-    fflush(stdout);
+    tstout("PASS: GOT EXCEPTION %d. (all)", thrown());
   }
-
   exit(0);
 }

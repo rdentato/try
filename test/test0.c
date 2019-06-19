@@ -1,22 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "trytest.h"
 #include "try.h"
 
-try_main;
+try_t maintry;
 
 int main(int argc,char *argv[])
 {
-
   try {
-    throw(EXCEPTION(1));
-    printf("NO ERROR\n");
-    fflush(stdout);
+    tstout("PASS: Throwing an unhandled exception will abort.");
+    throw(EX_OUTOFMEM);
+    tstout("FAIL: SHOULD NOT BE HERE.");
   }
-  catch(EXCEPTION(0)) {
-    printf("EXCEPTION 0\n");
-    fflush(stdout);
+  catch(EX_NODB) {
+    tstout("FAIL: GOT EXCEPTION %d.", thrown());
   }
-
-  exit(0);
+  exit(1);
 }
