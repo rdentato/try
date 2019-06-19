@@ -9,11 +9,11 @@
 # Exceptions
 
  Simple implementation of try/catch. try blocks can be nested.
- Exceptions are one of the the 30 possible exception numbered from 0 to 30
+ Exceptions are positive integers
  
-  #define OUTOFMEM    EXCEPTION_00
-  #define WRONGINPUT  EXCEPTION_01
-  #define INTERNALERR EXCEPTION_02
+  #define OUTOFMEM    1
+  #define WRONGINPUT  2
+  #define INTERNALERR 3
   
   try {
      ... code ...
@@ -24,7 +24,7 @@
   catch(OUTOFMEM) {
      ... code ...
   }
-  catch(WRONGINPUT | INTERNALERR) {
+  catch(WRONGINPUT) {
      ... code ...
   }
   catchall {  // if not handled ...
@@ -33,22 +33,21 @@
                  
 ]]] */
 
-
-#ifndef __TRY_H__
-#define __TRY_H__
+#ifndef TRY_H__
+#define TRY_H__
 #include <setjmp.h>
 #include <assert.h>
+#include <stdint.h>
 
 typedef struct try_jb_s {
-  jmp_buf           jmp;
-  struct try_jb_s  *prv;
-  const char       *fn;
-  int               ln;
-  int               ex;
-  int16_t           id;
-  int16_t           nn;
+  jmp_buf          jb;  // Jump buffer for setjmp/longjmp
+  struct try_jb_s *pv;  // Link to parent for nested try
+  const char      *fn;  // Filename 
+  int              ln;  // Line number
+  int              ex;  // Exception number
+  int16_t          id;  // Auxiliary information
+  int16_t          nn;  // Counter
 } try_jb_t;
-
 
 #ifdef _MSC_VER
   #define TRY_THREAD __declspec( thread )
@@ -57,48 +56,49 @@ typedef struct try_jb_s {
 #endif
 
 extern TRY_THREAD try_jb_t *try_jmp_list;
-extern char *try_emptystring;
+extern char const *try_emptystring;
 
-#define try_main   TRY_THREAD try_jb_t *try_jmp_list=NULL; \
-                   char *try_emptystring = ""
+#define try_t  char const *try_emptystring = ""; \
+               TRY_THREAD try_jb_t *try_jmp_list=NULL;\
+               int
 
 #ifdef TRY_MAIN
-  try_main;
+  try_t try__;
 #endif
 
 #define CATCH_HANDLER 0
 
-#define try_INIT     {.prv = try_jmp_list, .nn = 0, .fn = try_emptystring, .ln = 0, .id = 0}
+#define try_INIT     {.pv = try_jmp_list, .nn = 0, .fn = try_emptystring, .ln = 0, .id = 0}
 
 #define try          for ( try_jb_t try_jb = try_INIT; \
                           (try_jb.nn-- <= 0) && (try_jmp_list = &try_jb); \
-                           try_jmp_list = try_jb.prv, try_jb.nn = (try_jb.ex == 0? 2 : try_jb.nn)) \
+                           try_jmp_list = try_jb.pv, try_jb.nn = (try_jb.ex == 0? 2 : try_jb.nn)) \
                             if (try_jb.nn < -1) assert(CATCH_HANDLER); \
-                       else if (((try_jb.ex = setjmp(try_jb.jmp)) == 0)) 
+                       else if (((try_jb.ex = setjmp(try_jb.jb)) == 0)) 
 
-#define catch(x)       else if ((try_jb.ex & (x)) && (try_jmp_list=try_jb.prv, try_jb.nn=2)) 
+#define catch(x)       else if ((try_jb.ex == (x)) && (try_jmp_list=try_jb.pv, try_jb.nn=2)) 
 
-#define catchall       else for ( try_jmp_list=try_jb.prv; try_jb.nn < 0; try_jb.nn=2) 
+#define catchall       else for ( try_jmp_list=try_jb.pv; try_jb.nn < 0; try_jb.nn=2) 
 
-#define throw2(x,y) do { int ex_ = x; \
-                         if (ex_ > 0 && try_jmp_list) {\
-                           try_jmp_list->fn  = __FILE__; \
-                           try_jmp_list->ln  = __LINE__;\
-                           try_jmp_list->id  = (y);\
-                           longjmp(try_jmp_list->jmp, ex_); \
-                         } \
-                    } while (0)
+#define throw2(x,y)  do { int ex_ = x; \
+                       if (ex_ > 0 && try_jmp_list) {\
+                         try_jmp_list->fn  = __FILE__; \
+                         try_jmp_list->ln  = __LINE__;\
+                         try_jmp_list->id  = (y);\
+                         longjmp(try_jmp_list->jb, ex_); \
+                       } \
+                     } while (0)
 
+#define tryexp(x) x
 #define try_0(x,...)   x
 #define try_1(x,y,...) y
-#define throw(...)   throw2(try_0(__VA_ARGS__,1), try_1(__VA_ARGS__,0,0))
+#define throw(...)   throw2(tryexp(try_0(__VA_ARGS__,1)), \
+                            tryexp(try_1(__VA_ARGS__,0,0)))
 
-#define rethrow()    throw2(try_jb.ex,try_jb.id)
+#define rethrow()    throw2(try_jb.ex, try_jb.id)
 #define thrown()     try_jb.ex
 #define thrownid()   try_jb.id
 #define thrownfile() try_jb.fn
 #define thrownline() try_jb.ln
-
-#define EXCEPTION(n)  ((1<<(n &0x1F)) & 0x7FFFFFFF)
 
 #endif
