@@ -82,7 +82,8 @@ extern char const *try_emptystring;
 #define catchall       else for ( try_jmp_list=try_jb.pv; try_jb.nn < 0; try_jb.nn=2) 
 
 #define throw2(x,y)  do { int ex_ = x; \
-                       if (ex_ > 0 && try_jmp_list) {\
+                       if (ex_ > 0) { \
+                         if (!try_jmp_list) assert(CATCH_HANDLER); \
                          try_jmp_list->fn  = __FILE__; \
                          try_jmp_list->ln  = __LINE__;\
                          try_jmp_list->id  = (y);\
