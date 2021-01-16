@@ -21,7 +21,7 @@ Simple and clean exception handling in C
        if (something_failed) 
          throw(execption_num)  // must be > 0 
    
-       some_other_func();      // you can trhow exceptions
+       some_other_func();      // you can throw exceptions
                                // from other functions 
    
        ... code ...            // You MUST NEVER jump out of a try/catch block
