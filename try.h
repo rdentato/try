@@ -18,7 +18,7 @@
   try {
      ... code ...
      if (something_failed) throw(execption_num)  // must be > 0 
-     some_other_func(); // you can trhow exceptions from other functions too 
+     some_other_func(); // you can throw exceptions from other functions too 
      ... code ...
   }  
   catch(OUTOFMEM) {
