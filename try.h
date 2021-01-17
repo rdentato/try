@@ -61,12 +61,9 @@ typedef struct try_jb_s {
 extern TRY_THREAD try_jb_t *try_jmp_list;
 extern char const *try_emptystring;
 
-#define try_t  char const *try_emptystring = ""; \
-               TRY_THREAD try_jb_t *try_jmp_list=NULL;\
-               int
-
 #ifdef TRY_MAIN
-  try_t try__;
+  char const *try_emptystring = ""; 
+  TRY_THREAD try_jb_t *try_jmp_list=NULL;
 
   #define CATCH_HANDLER 0
   int try_abort() { assert(CATCH_HANDLER);}

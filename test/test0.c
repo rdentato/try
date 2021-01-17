@@ -2,9 +2,9 @@
 #include <stdlib.h>
 
 #include "trytest.h"
-#include "try.h"
 
-try_t maintry;
+#define TRY_MAIN
+#include "try.h"
 
 int main(int argc,char *argv[])
 {
