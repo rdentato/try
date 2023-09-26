@@ -7,7 +7,7 @@ done
 
 for f in lt*.c; do
   echo "compiling '$f'"
-  ${CC:-gcc} -std=c99 -I.. -o ut_${f%.c} ../try.c $f
+  ${CC:-gcc} -std=c99 -I.. -o ut_${f%.c} $f
 done
 
 rm -f runtest.log
