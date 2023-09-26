@@ -2,9 +2,10 @@
 #include <stdlib.h>
 
 #include "trytest.h"
-#define TRY_MAIN
+
 #include "try.h"
 
+try_t catch = 0;
 
 int main(int argc,char *argv[])
 {
@@ -15,12 +16,12 @@ int main(int argc,char *argv[])
       throw(EX_OUTOFMEM);  
       tstout("FAIL: Should have rised an exception!");
     }
-    catchall {
+    catch() {
       tstout("PASS: GOT EXCEPTION %d. (nested)", thrown());
     }
     tstout("PASS: Try completed");
   }
-  catchall {
+  catch() {
     tstout("FAIL: GOT EXCEPTION %d. (main)", thrown());
   }
 
@@ -30,14 +31,14 @@ int main(int argc,char *argv[])
       throw(EX_OUTOFMEM);  
       tstout("FAIL: Should have rised an exception!");
     }
-    catchall {
+    catch() {
       tstout("PASS: GOT EXCEPTION %d. (nested)", thrown());
       rethrow();
       tstout("FAIL: Should have rised an exception!");
     }
     tstout("FAIL: Try completed?");
   }
-  catchall {
+  catch() {
     tstout("PASS: GOT EXCEPTION %d. (main)", thrown());
   }
 

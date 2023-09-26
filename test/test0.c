@@ -3,8 +3,9 @@
 
 #include "trytest.h"
 
-#define TRY_MAIN
 #include "try.h"
+
+try_t catch = 0;
 
 int main(int argc,char *argv[])
 {

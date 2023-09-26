@@ -34,7 +34,7 @@ Simple and clean exception handling in C
     catch(WRONGINPUT) {
        ... code ...
     }
-    catchall {                 // catch any other exception
+    catch() {                 // catch any other exception
        ... code ...            // otherwise the progam would abort.
     }
 
@@ -43,23 +43,14 @@ Simple and clean exception handling in C
 
 ## Use try/catch in your program
 
-### Header only
-
  - Set your INCLUDE PATH so that `try.h` is reachable and include it
    from youre source files. 
- - In one of your source files (usually the source file where main() is
-   defined) define `TRY_MAIN` *before* including `try.h`
+ - In one (and only one) of your source files define a global variable
+   of type `try_t` and set it to 0 (I suggest using `try_t catch = 0;`)
+   The library needs this definition to keep track of `try` blocks nesting.
 
 See the test `test\test1.c` for an example.
 
-### Header and source file
-
- - Set your INCLUDE PATH so that `try.h` is reachable and include it
-   from youre source files. 
- - Compile `try.c` and link the object file against your program
-
-See the test `test\ltest1.c` for an example.
- 
 ## Reference
 
 ### Try/Catch
@@ -67,17 +58,17 @@ See the test `test\ltest1.c` for an example.
 ``` C
   try {
      // Block of code that could potentially
-     // throw() and exception. Possibly generated
+     throw(an_exception) //. Possibly generated
      // in a function called by this block
   }
-  catch(exception) { 
+  catch(an_exception) { 
      // Block of code that is executed if the specified
      // exception is thrown within the try block
   }
-  catchall {
+  catch() {
      // Block of code that is executed if no other handler
      // catches the exception. It is highly reccomended to 
-     // ALWAYS have a catchall block; unhandled exceptions
+     // ALWAYS have a catch() block; unhandled exceptions
      // will make the program abort().
   }
 ```
@@ -93,7 +84,7 @@ Remember to never leave a try/catch block with return, goto or break!
   rethrow()           Only usable in a catch block to throw the same exception.
 
   thrown()            Only usable in a catch block to retrieve the exception
-                      that has been caught. Only useful in a catchall block).
+                      that has been caught. Only useful in a catch() block).
 
   thrownid()          Only usable in a catch block to retrieve the exception
                       identifier (the second parameter of the throw() function)

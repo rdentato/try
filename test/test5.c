@@ -2,9 +2,8 @@
 #include <stdlib.h>
 
 #include "trytest.h"
-#define TRY_MAIN
-#include "try.h"
 
+#include "try.h"
 
 int function_1(int exc)
 {
@@ -13,7 +12,7 @@ int function_1(int exc)
        throw(exc,1);
        tstout("FAIL: No Exception!");
      } 
-     catchall {
+     catch() {
        tstout("PASS: Exception caught");
      }
      tstout("PASS: Should not be re-rised");
@@ -28,7 +27,7 @@ int function_2(int exc)
        throw(exc,2);
        tstout("FAIL: No Exception!");
      } 
-     catchall {
+     catch() {
        tstout("PASS: Exception caught");
        rethrow();
        tstout("FAIL: Should be re-rised");
@@ -38,6 +37,8 @@ int function_2(int exc)
    return exc;
 }
 
+try_t catch = 0;
+
 int main(int argc,char *argv[])
 {
   try {
@@ -46,12 +47,12 @@ int main(int argc,char *argv[])
       function_1(EX_OUTOFMEM);  
       tstout("PASS: Should have handled the exception!");
     }
-    catchall {
+    catch() {
       tstout("FAIL: GOT EXCEPTION %d. (nested)", thrown());
     }
     tstout("PASS: Try completed");
   }
-  catchall {
+  catch() {
     tstout("FAIL: GOT EXCEPTION %d. (main)", thrown());
   }
 
@@ -61,13 +62,13 @@ int main(int argc,char *argv[])
       function_1(EX_OUTOFMEM);  
       tstout("PASS: handled the exception!");
     }
-    catchall {
+    catch() {
       tstout("FAIL: GOT EXCEPTION %d. (nested)", thrown());
       rethrow();
       tstout("FAIL: Should have rised an exception!");
     }
   }
-  catchall {
+  catch() {
     tstout("PASS: GOT EXCEPTION %d. (main)", thrown());
   }
 
@@ -77,12 +78,12 @@ int main(int argc,char *argv[])
       function_2(EX_OUTOFMEM);  
       tstout("FAIL: Should have raised the exception!");
     }
-    catchall {
+    catch() {
       tstout("PASS: GOT EXCEPTION %d. (nested)", thrown());
     }
     tstout("PASS: Try completed");
   }
-  catchall {
+  catch() {
     tstout("FAIL: GOT EXCEPTION %d. (main)", thrown());
   }
 
@@ -92,13 +93,13 @@ int main(int argc,char *argv[])
       function_2(EX_OUTOFMEM);  
       tstout("FAIL: Should have handled the exception!");
     }
-    catchall {
+    catch() {
       tstout("PASS: GOT EXCEPTION %d. (nested)", thrown());
       rethrow();
       tstout("FAIL: Should have rised an exception!");
     }
   }
-  catchall {
+  catch() {
     tstout("PASS: GOT EXCEPTION %d. (main)", thrown());
   }
 

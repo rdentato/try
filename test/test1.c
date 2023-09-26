@@ -3,9 +3,9 @@
 
 #include "trytest.h"
 
-#define TRY_MAIN
 #include "try.h"
 
+try_t catch = 0;
 
 int main(int argc,char *argv[])
 {
@@ -16,7 +16,7 @@ int main(int argc,char *argv[])
   catch(24) {
     tstout("FAIL: GOT EXCEPTION %d.", thrown());
   }
-  catchall {
+  catch() {
     tstout("FAIL: GOT EXCEPTION %d. (all)", thrown());
   }
 
@@ -27,7 +27,7 @@ int main(int argc,char *argv[])
   catch(24) {
     tstout("PASS: GOT EXCEPTION %d.", thrown());
   }
-  catchall {
+  catch() {
     tstout("FAIL: GOT EXCEPTION %d. (all)", thrown());
   }
 
@@ -38,7 +38,7 @@ int main(int argc,char *argv[])
   catch(24) {
     tstout("FAIL: GOT EXCEPTION %d.", thrown());
   }
-  catchall {
+  catch() {
     tstout("PASS: GOT EXCEPTION %d. (all)", thrown());
   }
   exit(0);
