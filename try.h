@@ -41,15 +41,15 @@
 #include <setjmp.h>
 #include <assert.h>
 #include <stdint.h>
+#include <errno.h>
 
 typedef struct try_jb_s {
   jmp_buf          jb;  // Jump buffer for setjmp/longjmp
   struct try_jb_s *pv;  // Link to parent for nested try
   const char      *fn;  // Filename
   int              ln;  // Line number
-  int              ex;  // Exception number
-  int16_t          id;  // Auxiliary information
-  int16_t          nn;  // Counter
+  unsigned short   ex;  // Exception number
+  short            nn;  // Counter
 } try_jb_t;
 
 #ifdef _MSC_VER
@@ -67,17 +67,18 @@ extern TRY_THREAD try_jb_t *try_jmp_list;
 
 #define try_throw(x,y,fname,line) \
   do { \
+    unsigned short ex = x; int ey = y;\
     if (try_jmp_list == NULL) try_abort(); \
-    if (x > 0) {\
+    if (ex > 0) {\
       try_jmp_list->fn  = fname; \
       try_jmp_list->ln  = line; \
-      try_jmp_list->id  = y; \
-      longjmp(try_jmp_list->jb, x); \
+      if (ey>0) errno = ey; \
+      longjmp(try_jmp_list->jb, ex); \
     }\
   } while(0)
 
 
-#define try_INIT     {.pv = try_jmp_list, .nn = 0, .fn = NULL, .ln = 0, .id = 0}
+#define try_INIT     {.pv = try_jmp_list, .nn = 0, .fn = NULL, .ln = 0}
 
 #define try          for ( try_jb_t try_jb = try_INIT; \
                           (try_jb.nn-- <= 0) && (try_jmp_list = &try_jb); \
@@ -98,9 +99,8 @@ extern TRY_THREAD try_jb_t *try_jmp_list;
 
 #define throw(x,...)  try_throw(x, __VA_ARGS__ -0, __FILE__, __LINE__)
 
-#define rethrow()    try_throw(try_jb.ex, try_jb.id, __FILE__, __LINE__)
+#define rethrow()    try_throw(try_jb.ex, errno, __FILE__, __LINE__)
 #define thrown()     try_jb.ex
-#define thrownid()   try_jb.id
 #define thrownfile() try_jb.fn
 #define thrownline() try_jb.ln
 

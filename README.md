@@ -20,7 +20,7 @@ Simple and clean exception handling in C
     try {
        ... code ...
        if (something_failed) 
-         throw(execption_num)  // must be > 0 
+         throw(execption_num)  // exception_num must be between 1 and 65535 
    
        some_other_func();      // you can throw exceptions
                                // from other functions 
@@ -48,9 +48,10 @@ Simple and clean exception handling in C
    from youre source files. 
  - In one (and only one) of your source files define a global variable
    of type `try_t` and set it to 0 (I suggest using `try_t catch = 0;`)
-   The library needs this definition to keep track of `try` blocks nesting.
+   The library needs this definition to keep track of `try` blocks nesting
+   it is not supposed to be used or changed by the programmer.
 
-See the test `test\test1.c` for an example.
+See the tests in the `test` directory for an example.
 
 ## Reference
 
@@ -78,9 +79,10 @@ Remember to never leave a try/catch block with return, goto or break!
 ### Throwing exceptions.
 
 ```
-  throw(exc [, id])   Throws an exception (a positive integer).
-                      An optional "identifier" (an integer between -16384 and
-                      16383) can be specified to provide additional info.
+  throw(exc [, err])  Throws an exception (a positive integer between 1 and 65535).
+                      The value specified by `err`, if greater than 0, will be
+                      assigned to `errno`. This can be useful to specify further
+                      information about the exception.
 
   rethrow()           Only usable in a catch block to throw the same exception.
 
