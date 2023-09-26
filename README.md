@@ -1,4 +1,4 @@
-# try    [![Build Status](https://travis-ci.com/rdentato/try.svg?branch=master)](https://travis-ci.com/rdentato/try) 
+# try   [*Join us on Discord*](https://discord.gg/QFzP9vaR8j)
 
 Simple and clean exception handling in C
 
