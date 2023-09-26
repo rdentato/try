@@ -1,5 +1,4 @@
-# try   [*Join us on Discord*](https://discord.gg/QFzP9vaR8j)
-
+# try  ![Discord Shield](https://discordapp.com/api/guilds/1073960074004930631/widget.png?style=shield)
 Simple and clean exception handling in C
 
 ## example
