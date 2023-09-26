@@ -5,15 +5,16 @@ Simple and clean exception handling in C
 ## example
 
 ```
-  // TRY_MAIN must be defined before including try.h
-  // only ONCE (usually where your main() function is)
-  #define TRY_MAIN
+
   #include "try.h"
 
   #define OUTOFMEM    1
   #define WRONGINPUT  2
   #define INTERNALERR 3
-  
+
+  // Define a variable of type `try_t` for the use of the library
+  try_t catch = 0;
+
   ... code ...
 
     try {
