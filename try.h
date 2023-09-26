@@ -34,8 +34,7 @@
 ]]] */
 
 #ifndef TRY_VERSION
-#define TRY_VERSION 0x0001000C
-#define TRY_VERSION_STR "try 0.1.0rc"
+#define TRY_VERSION 0x0002000C
 
 #include <stdio.h>
 #include <setjmp.h>
