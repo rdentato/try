@@ -103,6 +103,6 @@ extern TRY_THREAD try_jb_t *try_jmp_list;
 #define thrownfile() try_jb.fn
 #define thrownline() try_jb.ln
 
-// #define leave(e)    for(int e_=!!(e); e_; e_=-1) if (e_<0) goto leave; else
+#define leave(e)    if (!(try_jb.nn = 2)); else continue;
 
 #endif
