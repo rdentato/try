@@ -79,6 +79,8 @@ See the tests in the `test` directory for some example.
   catch(an_exception) { 
      // Block of code that is executed if the specified
      // exception is thrown within the try block
+     if (something) leave(); // Only exit via `leave()`
+     ... do something else ...
   }
   catch() {
      // Block of code that is executed if no other handler
@@ -104,9 +106,6 @@ It will move you to the end of the try/catch block.
 
   thrownexception()   Only usable in a catch block to retrieve the exception
   or thrown()         that has been caught. Only useful in a catch() block).
-
-  thrownid()          Only usable in a catch block to retrieve the exception
-                      identifier (the second parameter of the throw() function)
 
   thrownfile()        Only usable in a catch block to retrieve the filename
   thrownline()        and the line of the try/catch block that genereated the
