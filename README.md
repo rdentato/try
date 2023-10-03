@@ -17,8 +17,15 @@ Simple and clean exception handling in C
   // Define a variable of type `try_t` for the use of the library
   try_t catch = 0;
 
-  ... code ...
+  void some_other_func() 
+  {
+    ... code ...
+     throw(WRONGINPUT);
+    ... code ...
+  }
 
+  void a_function()
+  {
     try {
        ... code ...
        if (something_failed) 
@@ -30,17 +37,17 @@ Simple and clean exception handling in C
        ... code ...            // You MUST NEVER jump out of a try/catch block
                                // (via return, goto or break). Use throw() to
                                // ensure the right behaviour.
-    }  
-    catch(OUTOFMEM) {
+     }  
+     catch(OUTOFMEM) {
        ... code ...
-    }
-    catch(WRONGINPUT) {
+     }
+     catch(WRONGINPUT) {
        ... code ...
-    }
-    catch() {                 // catch any other exception
+     }
+     catch() {                 // catch any other exception
        ... code ...            // otherwise the progam would abort.
-    }
-
+     }
+  }
 
 ```
 
@@ -56,7 +63,7 @@ Simple and clean exception handling in C
 
  - Alternatively, you can compile `try.c` and link against `try.o`
   
-See the tests in the `test` directory for an example.
+See the tests in the `test` directory for some example.
 
 ## Reference
 
@@ -64,9 +71,10 @@ See the tests in the `test` directory for an example.
 
 ``` C
   try {
-     // Block of code that could potentially
-     throw(an_exception) //. Possibly generated
-     // in a function called by this block
+     // Block of code that could potentially throw an exception
+     throw(an_exception); // Directly or
+     a_function();        // possibly generated
+                          // in a function called by this block
   }
   catch(an_exception) { 
      // Block of code that is executed if the specified
@@ -80,7 +88,8 @@ See the tests in the `test` directory for an example.
   }
 ```
 Remember to never leave a try/catch block with return, goto or break!
-If you really need to exit in an unstructured way, use `leave()`.
+If you really need to exit in an unstructured way, use `leave()` that
+*must* be outside any loop or switch block.
 It will move you to the end of the try/catch block.
 
 ### Throwing exceptions.
