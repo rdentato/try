@@ -1,4 +1,6 @@
-rm -f ut_*
+rm -f ut_* try.o
+
+${CC:-gcc} -std=c99 -I.. -o try.o -c ../try.c
 
 for f in t*.c; do
   echo "compiling '$f'"
@@ -7,10 +9,11 @@ done
 
 for f in lt*.c; do
   echo "compiling '$f'"
-  ${CC:-gcc} -std=c99 -I.. -o ut_${f%.c} $f
+  ${CC:-gcc} -std=c99 -I.. -o ut_${f%.c} $f try.o
 done
 
 rm -f runtest.log
+
 for f in ut_*; do
   echo "running '$f' 2> runtest.log"
   ./$f 2>> runtest.log
