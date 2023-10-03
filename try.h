@@ -40,7 +40,7 @@
                  
 ]]] */
 
-#ifndef TRY_VERSIONjmp_buffer
+#ifndef TRY_VERSION
 #define TRY_VERSION 0x0002000F
 
 #include <stdio.h>
