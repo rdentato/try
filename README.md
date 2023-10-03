@@ -48,11 +48,14 @@ Simple and clean exception handling in C
 
  - Set your INCLUDE PATH so that `try.h` is reachable and include it
    from youre source files. 
+
  - In one (and only one) of your source files define a global variable
    of type `try_t` and set it to 0 (I suggest using `try_t catch = 0;`)
    The library needs this definition to keep track of `try` blocks nesting
    it is not supposed to be used or changed by the programmer.
 
+ - Alternatively, you can compile `try.c` and link against `try.o`
+  
 See the tests in the `test` directory for an example.
 
 ## Reference
