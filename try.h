@@ -33,7 +33,7 @@
                  
 ]]] */
 
-#ifndef TRY_VERSION
+#ifndef TRY_VERSIONjmp_buffer
 #define TRY_VERSION 0x0002000C
 
 #include <stdio.h>
@@ -43,12 +43,12 @@
 #include <errno.h>
 
 typedef struct try_jb_s {
-  jmp_buf          jb;  // Jump buffer for setjmp/longjmp
-  struct try_jb_s *pv;  // Link to parent for nested try
-  const char      *fn;  // Filename
-  int              ln;  // Line number
-  unsigned short   ex;  // Exception number
-  short            nn;  // Counter
+  jmp_buf          jmp_buffer;  // Jump buffer for setjmp/longjmp
+  struct try_jb_s *prev_jmpbuf;  // Link to parent for nested try
+  const char      *file_name;  // Filename
+  int              line_num;  // Line number
+  unsigned short   exception_num;  // Exception number
+  short            count;  // Counter
 } try_jb_t;
 
 #ifdef _MSC_VER
@@ -66,27 +66,27 @@ extern TRY_THREAD try_jb_t *try_jmp_list;
 
 #define try_throw(x,y,fname,line) \
   do { \
-    unsigned short ex = x; int ey = y;\
+    unsigned short exception_num = x; int ey = y;\
     if (try_jmp_list == NULL) try_abort(); \
-    if (ex > 0) {\
-      try_jmp_list->fn  = fname; \
-      try_jmp_list->ln  = line; \
+    if (exception_num > 0) {\
+      try_jmp_list->file_name  = fname; \
+      try_jmp_list->line_num  = line; \
       if (ey>0) errno = ey; \
-      longjmp(try_jmp_list->jb, ex); \
+      longjmp(try_jmp_list->jmp_buffer, exception_num); \
     }\
   } while(0)
 
 
-#define try_INIT     {.pv = try_jmp_list, .nn = 0, .fn = NULL, .ln = 0}
+#define try_INIT     {.prev_jmpbuf = try_jmp_list, .count = 0, .file_name = NULL, .line_num = 0}
 
 #define try          for ( try_jb_t try_jb = try_INIT; \
-                          (try_jb.nn-- <= 0) && (try_jmp_list = &try_jb); \
-                           try_jmp_list = try_jb.pv, try_jb.nn = (try_jb.ex == 0? 2 : try_jb.nn)) \
-                            if (try_jb.nn < -1) try_abort(); \
-                       else if (((try_jb.ex = setjmp(try_jb.jb)) == 0)) 
+                          (try_jb.count-- <= 0) && (try_jmp_list = &try_jb); \
+                           try_jmp_list = try_jb.prev_jmpbuf, try_jb.count = (try_jb.exception_num == 0? 2 : try_jb.count)) \
+                            if (try_jb.count < -1) try_abort(); \
+                       else if (((try_jb.exception_num = setjmp(try_jb.jmp_buffer)) == 0)) 
 
-#define catch__1(x)     else if ((try_jb.ex == (x)) && (try_jmp_list=try_jb.pv, try_jb.nn=2)) 
-#define catch__0( )     else for (try_jmp_list=try_jb.pv; try_jb.nn < 0; try_jb.nn=2) 
+#define catch__1(x)     else if ((try_jb.exception_num == (x)) && (try_jmp_list=try_jb.prev_jmpbuf, try_jb.count=2)) 
+#define catch__0( )     else for (try_jmp_list=try_jb.prev_jmpbuf; try_jb.count < 0; try_jb.count=2) 
 
 #define catch__cnt(x,y,z,a ...) a
 #define catch__argn(...)       catch__cnt(__VA_ARGS__, 2, 0, 1)
@@ -98,11 +98,11 @@ extern TRY_THREAD try_jb_t *try_jmp_list;
 
 #define throw(x,...)  try_throw(x, __VA_ARGS__ -0, __FILE__, __LINE__)
 
-#define rethrow()    try_throw(try_jb.ex, errno, __FILE__, __LINE__)
-#define thrown()     try_jb.ex
-#define thrownfile() try_jb.fn
-#define thrownline() try_jb.ln
+#define rethrow()    try_throw(try_jb.exception_num, errno, __FILE__, __LINE__)
+#define thrown()     try_jb.exception_num
+#define thrownfile() try_jb.file_name
+#define thrownline() try_jb.line_num
 
-#define leave(e)    if (!(try_jb.nn = 2)); else continue;
+#define leave(e)    if (!(try_jb.count = 2)); else continue;
 
 #endif
