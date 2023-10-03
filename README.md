@@ -103,7 +103,7 @@ It will move you to the end of the try/catch block.
   rethrow()           Only usable in a catch block to throw the same exception.
 
   thrownexception()   Only usable in a catch block to retrieve the exception
-                      that has been caught. Only useful in a catch() block).
+  or thrown()         that has been caught. Only useful in a catch() block).
 
   thrownid()          Only usable in a catch block to retrieve the exception
                       identifier (the second parameter of the throw() function)
