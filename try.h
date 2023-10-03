@@ -14,10 +14,17 @@
   #define OUTOFMEM    1
   #define WRONGINPUT  2
   #define INTERNALERR 3
+
+  void some_other_function()
+  {
+     ... code ...
+     throw(WRONGINPUT); // will be handled in the parent function
+     ... code ...
+  }
   
   try {
      ... code ...
-     if (something_failed) throw(execption_num)  // must be > 0 
+     if (something_failed) throw(OUTOFMEM);  // must be > 0 
      some_other_func(); // you can trhow exceptions from other functions too 
      ... code ...
   }  
@@ -34,7 +41,7 @@
 ]]] */
 
 #ifndef TRY_VERSIONjmp_buffer
-#define TRY_VERSION 0x0002000C
+#define TRY_VERSION 0x0002000F
 
 #include <stdio.h>
 #include <setjmp.h>
@@ -43,12 +50,12 @@
 #include <errno.h>
 
 typedef struct try_jb_s {
-  jmp_buf          jmp_buffer;  // Jump buffer for setjmp/longjmp
-  struct try_jb_s *prev_jmpbuf;  // Link to parent for nested try
-  const char      *file_name;  // Filename
-  int              line_num;  // Line number
+  jmp_buf          jmp_buffer;     // Jump buffer for setjmp/longjmp
+  struct try_jb_s *prev_jmpbuf;    // Link to parent for nested try
+  const char      *file_name;      // Filename
+  int              line_num;       // Line number
   unsigned short   exception_num;  // Exception number
-  short            count;  // Counter
+  short            count;          // Counter
 } try_jb_t;
 
 #ifdef _MSC_VER
