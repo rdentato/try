@@ -51,14 +51,14 @@ int main(int argc,char *argv[])
     try {
       // Note that if seq was a variable local to main(), this wouldn't
       // work because it would be reset by the `longjmp()`
-      throw(ENOMEM,.foo = seq++);
+      throw(EX_NOFILE,.foo = seq++);
       tstout("FAIL: Shouldn't be here in try");
     }
     catch() {
       tstout("%s: Sequnce incremented: %d", 
              tstpass(seq == 7101), seq);
       tstout("%s: Nested handler seq: %d (seq = %d)",
-             tstpass(exception->exception_num == ENOMEM),
+             tstpass(exception->exception_num == EX_NOFILE),
              exception->foo, seq);
       rethrow(.foo=seq++);
     }

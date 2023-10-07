@@ -15,7 +15,7 @@ int function_1(int exc)
        tstout("FAIL: No Exception!");
      } 
      catch() {
-       tstout("PASS: Exception %d caught (err=%d)", thrown(), errno);
+       tstout("PASS: Exception %d caught (err=%d)", thrown(), exception->err);
      }
      tstout("PASS: Should not be re-rised");
    }
@@ -30,7 +30,7 @@ int function_2(int exc)
        tstout("FAIL: No Exception!");
      } 
      catch() {
-       tstout("PASS: Exception %d caught (err=%d)", thrown(), errno);
+       tstout("PASS: Exception %d caught (err=%d)", thrown(), exception->err);
        rethrow();
        tstout("FAIL: Should be re-rised");
      }
@@ -50,7 +50,7 @@ int main(int argc,char *argv[])
     tstout("PASS: No Exception (function return: %d)",ret);
   }
   catch() {
-    tstout("FAIL: GOT EXCEPTION %d,%d. (all)", thrown(), errno);
+    tstout("FAIL: GOT EXCEPTION %d,%d. (all)", thrown(), exception->err);
   }
 
   try {
@@ -58,7 +58,7 @@ int main(int argc,char *argv[])
     tstout("FAIL: No Exception (function return: %d)",ret);
   }
   catch() {
-    tstout("PASS: GOT EXCEPTION %d,%d. (all)", thrown(), errno);
+    tstout("PASS: GOT EXCEPTION %d,%d. (all)", thrown(), exception->err);
   }
 
   exit(0);
