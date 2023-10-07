@@ -46,7 +46,6 @@
 #include <stdio.h>
 #include <setjmp.h>
 #include <assert.h>
-#include <errno.h>
 
 #ifndef exception_info
 #define exception_info 
@@ -106,10 +105,6 @@ extern TRY_THREAD try_jb_t *try_jmp_list;
 #define catch(...) catch__join(catch__ , catch__argn(catch__comma __VA_ARGS__ ()))(__VA_ARGS__)
 
 #define throw(exception_num_,...)  try_throw(exception_num_, __LINE__, __FILE__, __VA_ARGS__)
-
-// The only mandatory argument for throw() is the exception number. 
-// If `exception_errno` is greater than 0, it will be assigned as value to `errno`.
-// You can use it to provide further information about the exception.
 
 #define try_throw(exception_num_, line_num_ , file_name_, ...) \
   do { \
