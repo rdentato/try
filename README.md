@@ -97,19 +97,48 @@ It will move you to the end of the try/catch block.
 ### Throwing exceptions.
 
 ```
-  throw(exc [, err])  Throws an exception (a positive integer between 1 and 65535).
-                      The value specified by `err`, if greater than 0, will be
-                      assigned to `errno`. This can be useful to specify further
-                      information about the exception.
+  throw(exc [, ...])  Throws an exception (a positive integer between 1 and 65535).
+                      The optional values are passed as part of the exception and 
+                      can be retrieved through the `exception` object.
+                      This can be useful to specify further information about the exception.
 
-  rethrow()           Only usable in a catch block to throw the same exception.
+  rethrow([...])      Only usable in a catch block to throw the same exception.
+
+  exception           This object will help you getting the information about the
+                      exception that had been thrown.
+                      Default information are:
+                        exception->exception_num  (int)    The exception thrown 
+                        exception->file_name      (char *) The source file where it happened
+                        exception->line_num       (int)    The source line number where it happened
+
+                      Additional information can be specified by defining the macro:
+                        exception_info
+                      **before** including `try.h`
+                      Example:
+                        #define exception_info  time_t time_stamp; \
+                                                int    seq_num;
+                                                 
+                        if you throw this exception:
+
+                           throw(ENOMEM, .time_stamp=time(NULL), global_seq++);
+
+                        in the catch block, you can retrive, say, the time stamp with 
+                           expression->time_stamp
+
+                        You can also only specify information by name:
+                           throw(ENOMEM, .seq_num = global_seq++);
+
+  These functions are deprecated (but still there for code using older version of try.h)
 
   thrownexception()   Only usable in a catch block to retrieve the exception
-  or thrown()         that has been caught. Only useful in a catch() block).
+  or thrown()         that has been caught. Only useful in a catch() block.
 
   thrownfile()        Only usable in a catch block to retrieve the filename
   thrownline()        and the line of the try/catch block that genereated the
                       exception. Useful to print a more meaningful error message
+
+
+
 ```
 
 
