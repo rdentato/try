@@ -97,12 +97,13 @@ It will move you to the end of the try/catch block.
 ### Throwing exceptions.
 
 ```
-  throw(exc [, ...])  Throws an exception (a positive integer between 1 and 65535).
+  throw(exc [, ...])  Throws an exception (a positive integer).
                       The optional values are passed as part of the exception and 
                       can be retrieved through the `exception` object.
                       This can be useful to specify further information about the exception.
 
-  rethrow([...])      Only usable in a catch block to throw the same exception.
+  rethrow([...])      Only usable in a catch block to throw the same exception (possibly
+                      with new additional information).
 
   exception           This object will help you getting the information about the
                       exception that had been thrown.

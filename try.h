@@ -41,7 +41,7 @@
 ]]] */
 
 #ifndef TRY_VERSION
-#define TRY_VERSION 0x0002000F
+#define TRY_VERSION 0x0003000C
 
 #include <stdio.h>
 #include <setjmp.h>
@@ -64,10 +64,8 @@ typedef struct try_jb_s {
   jmp_buf          jmp_buffer;     // Jump buffer for setjmp/longjmp
   struct try_jb_s *prev_jmpbuf;    // Link to parent for nested try
   exception_t     *info;
-  const char      *file_name;      // Filename
-  int              line_num;       // Line number
-  unsigned short   exception_num;  // Exception number
-  short            count;          // Counter
+  int              exception_num;  // Exception number
+  int              count;          // Counter
 } try_jb_t;
 
 #ifdef _MSC_VER
@@ -81,14 +79,17 @@ extern TRY_THREAD try_jb_t *try_jmp_list;
 #define try_t TRY_THREAD try_jb_t *try_jmp_list=NULL; int
 
 #define CATCH_HANDLER 0
-#define try_abort() assert(CATCH_HANDLER)
 
-#define try_ENV     {.prev_jmpbuf = try_jmp_list, .count = 0, .file_name = NULL, .line_num = 0}
+#ifndef try_abort
+#define try_abort(...) assert(CATCH_HANDLER)
+#endif
+
+#define try_ENV     {.prev_jmpbuf = try_jmp_list, .count = 0}
 
 #define try          for ( try_jb_t try_jb = try_ENV; \
                           (try_jb.count-- <= 0) && (try_jmp_list = &try_jb); \
                            try_jmp_list = try_jb.prev_jmpbuf, try_jb.count = (try_jb.exception_num == 0? 2 : try_jb.count)) \
-                            if (try_jb.count < -1) try_abort(); \
+                            if (try_jb.count < -1) try_abort(&(try_jb.info)); \
                        else if (((try_jb.exception_num = setjmp(try_jb.jmp_buffer)) == 0)) 
 
 #define catch__1(x)    else if ((try_jb.exception_num == (x)) && (try_jmp_list=try_jb.prev_jmpbuf, try_jb.count=2)) 
