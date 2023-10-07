@@ -3,6 +3,7 @@
 
 #include "trytest.h"
 
+#define exception_info int err;
 #include "try.h"
 
 int function_1(int exc)
@@ -94,7 +95,7 @@ int main(int argc,char *argv[])
       tstout("FAIL: Should have handled the exception!");
     }
     catch() {
-      tstout("PASS: GOT EXCEPTION %d. (nested)", thrown());
+      tstout("PASS: GOT EXCEPTION %d %d. (nested)", thrown(), try_jb.exception_num);
       rethrow();
       tstout("FAIL: Should have rised an exception!");
     }

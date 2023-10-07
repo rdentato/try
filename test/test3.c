@@ -3,6 +3,7 @@
 
 #include "trytest.h"
 
+#define exception_info int err;
 #include "try.h"
 
 
