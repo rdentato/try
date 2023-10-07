@@ -3,10 +3,9 @@
 
 #include "trytest.h"
 
+#define tryabort(e) my_handler(e)
 
 #include "try.h"
-
-#define tryabort(e) my_handler(e)
 
 void my_handler(exception_t *e)
 {
