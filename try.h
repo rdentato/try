@@ -80,8 +80,10 @@ extern TRY_THREAD try_jb_t *try_jmp_list;
 
 #define CATCH_HANDLER 0
 
-#ifndef try_abort
-#define try_abort(...) assert(CATCH_HANDLER)
+#define try_abort(e) assert(CATCH_HANDLER)
+
+#ifndef tryabort
+#define tryabort try_abort
 #endif
 
 #define try_ENV     {.prev_jmpbuf = try_jmp_list, .count = 0}
@@ -89,7 +91,7 @@ extern TRY_THREAD try_jb_t *try_jmp_list;
 #define try          for ( try_jb_t try_jb = try_ENV; \
                           (try_jb.count-- <= 0) && (try_jmp_list = &try_jb); \
                            try_jmp_list = try_jb.prev_jmpbuf, try_jb.count = (try_jb.exception_num == 0? 2 : try_jb.count)) \
-                            if (try_jb.count < -1) try_abort(&(try_jb.info)); \
+                            if (try_jb.count < -1) { tryabort(try_jb.info); abort(); }\
                        else if (((try_jb.exception_num = setjmp(try_jb.jmp_buffer)) == 0)) 
 
 #define catch__1(x)    else if ((try_jb.exception_num == (x)) && (try_jmp_list=try_jb.prev_jmpbuf, try_jb.count=2)) 
@@ -129,6 +131,6 @@ extern TRY_THREAD try_jb_t *try_jmp_list;
 
 #define leave(e)  if (!(try_jb.count = 2)); else continue;
 
-#define exception  ((exception_t *)(try_jb.info))
+#define exception  (try_jb.info)
 
 #endif

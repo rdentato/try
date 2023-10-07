@@ -138,7 +138,22 @@ It will move you to the end of the try/catch block.
   thrownline()        and the line of the try/catch block that genereated the
                       exception. Useful to print a more meaningful error message
 
+  tryabort(e)         Is a function that is invoked when an unhandled exception
+                      is triggered. It can be useful for printing an informative
+                      message or doing some cleanup before aborting the program.
 
+                      The function can be easily overwritten:
+ 
+                          #define tryabort(e) my_handler(e)
+                          #include "try.h"
+ 
+                          void my_handler(exception_t *e)
+                          {
+                              fprintf(stderr,"Unhandled exception %d @ %s:%d\n",
+                                             e->exception_num,
+                                             e->file_name,
+                                             e->line_num);
+                          }
 
 ```
 
