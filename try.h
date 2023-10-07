@@ -48,9 +48,22 @@
 #include <assert.h>
 #include <errno.h>
 
+#ifndef exception_info
+#define exception_info 
+#endif
+
+typedef struct exception_s {
+   int   exception_num;
+   int   line_num;
+   char *file_name;
+   exception_info;  // single semicolon allowed by ISO/IEC 9899:1999 (C99) §6.7.2.1
+} exception_t;
+
+
 typedef struct try_jb_s {
   jmp_buf          jmp_buffer;     // Jump buffer for setjmp/longjmp
   struct try_jb_s *prev_jmpbuf;    // Link to parent for nested try
+  exception_t     *info;
   const char      *file_name;      // Filename
   int              line_num;       // Line number
   unsigned short   exception_num;  // Exception number
@@ -67,12 +80,12 @@ extern TRY_THREAD try_jb_t *try_jmp_list;
 
 #define try_t TRY_THREAD try_jb_t *try_jmp_list=NULL; int
 
-#define CATCH__HANDLER 0
-#define try_abort() assert(CATCH__HANDLER)
+#define CATCH_HANDLER 0
+#define try_abort() assert(CATCH_HANDLER)
 
-#define try_INIT     {.prev_jmpbuf = try_jmp_list, .count = 0, .file_name = NULL, .line_num = 0}
+#define try_ENV     {.prev_jmpbuf = try_jmp_list, .count = 0, .file_name = NULL, .line_num = 0}
 
-#define try          for ( try_jb_t try_jb = try_INIT; \
+#define try          for ( try_jb_t try_jb = try_ENV; \
                           (try_jb.count-- <= 0) && (try_jmp_list = &try_jb); \
                            try_jmp_list = try_jb.prev_jmpbuf, try_jb.count = (try_jb.exception_num == 0? 2 : try_jb.count)) \
                             if (try_jb.count < -1) try_abort(); \
@@ -89,31 +102,32 @@ extern TRY_THREAD try_jb_t *try_jmp_list;
 
 #define catch(...) catch__join(catch__ , catch__argn(catch__comma __VA_ARGS__ ()))(__VA_ARGS__)
 
-#define throw(exception_num_,...)  try_throw(exception_num_, __VA_ARGS__ -0, __FILE__, __LINE__)
+#define throw(exception_num_,...)  try_throw(exception_num_, __LINE__, __FILE__, __VA_ARGS__)
 
 // The only mandatory argument for throw() is the exception number. 
 // If `exception_errno` is greater than 0, it will be assigned as value to `errno`.
 // You can use it to provide further information about the exception.
 
-#define try_throw(exception_num_, exception_errno_, file_name_ , line_num_ ) \
+#define try_throw(exception_num_, line_num_ , file_name_, ...) \
   do { \
     unsigned short exception_num = exception_num_;\
-    int exception_errno = exception_errno_ ;\
+    static exception_t exc = {0}; \
+    exc = ((exception_t){.exception_num = exception_num, .line_num=line_num_ , .file_name=file_name_, __VA_ARGS__});\
     if (try_jmp_list == NULL) try_abort(); \
     if (exception_num > 0) {\
-      try_jmp_list->file_name  = file_name_; \
-      try_jmp_list->line_num  = line_num_; \
-      if (exception_errno > 0) errno = exception_errno; \
+      try_jmp_list->info = &exc;\
       longjmp(try_jmp_list->jmp_buffer, exception_num); \
     }\
   } while(0)
 
-#define rethrow()          try_throw(try_jb.exception_num, errno, __FILE__, __LINE__)
-#define thrown()           try_jb.exception_num
-#define thrownexception()  try_jb.exception_num
-#define thrownfile()       try_jb.file_name
-#define thrownline()       try_jb.line_num
+#define rethrow(...)       try_throw( thrown(), __LINE__, __FILE__, __VA_ARGS__)
+#define thrown()           (exception->exception_num)
+#define thrownexception()  thrown() 
+#define thrownfile()       (exception->file_num)
+#define thrownline()       (exception->file_num)
 
 #define leave(e)  if (!(try_jb.count = 2)); else continue;
+
+#define exception  ((exception_t *)(try_jb.info))
 
 #endif
