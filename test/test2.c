@@ -24,10 +24,10 @@ int main(int argc,char *argv[])
     tstout("PASS: No Exception");
   }
   catch(EX_OUTOFMEM) {
-    tstout("FAIL: GOT EXCEPTION %d.", thrown());
+    tstout("FAIL: GOT EXCEPTION %d.", exception.exception_num);
   }
   catch() {
-    tstout("FAIL: GOT EXCEPTION %d. (all)", thrown());
+    tstout("FAIL: GOT EXCEPTION %d. (all)", exception.exception_num);
   }
 
   try {
@@ -35,10 +35,10 @@ int main(int argc,char *argv[])
     tstout("FAIL: No Exception!");
   }
   catch(EX_OUTOFMEM) {
-    tstout("PASS: GOT EXCEPTION %d.", thrown());
+    tstout("PASS: GOT EXCEPTION %d.", exception.exception_num);
   }
   catch() {
-    tstout("FAIL: GOT EXCEPTION %d. (all)", thrown());
+    tstout("FAIL: GOT EXCEPTION %d. (all)", exception.exception_num);
   }
 
   try {
@@ -46,10 +46,10 @@ int main(int argc,char *argv[])
     tstout("FAIL: No Exception!");
   }
   catch(EX_OUTOFMEM) {
-    tstout("FAIL: GOT EXCEPTION %d.", thrown());
+    tstout("FAIL: GOT EXCEPTION %d.", exception.exception_num);
   }
   catch() {
-    tstout("PASS: GOT EXCEPTION %d. (all)", thrown());
+    tstout("PASS: GOT EXCEPTION %d. (all)", exception.exception_num);
   }
 
   exit(0);

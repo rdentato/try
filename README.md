@@ -112,7 +112,7 @@ It will move you to the end of the try/catch block.
                         exception.file_name      (char *) The source file where it happened
                         exception.line_num       (int)    The source line number where it happened
 
-                      Additional information can be specified by defining the macro `exception_info``
+                      Additional information can be specified by defining the macro `exception_info`
                       **before** including `try.h`.
 
                       Example:
@@ -146,14 +146,6 @@ It will move you to the end of the try/catch block.
                                              exception.line_num);
                           }
 
-NOTE: These functions are deprecated (but still there for code using older version of try.h)
-
-  thrownexception()   Only usable in a catch block to retrieve the exception
-  or thrown()         that has been caught. Only useful in a catch() block.
-
-  thrownfile()        Only usable in a catch block to retrieve the filename
-  thrownline()        and the line of the try/catch block that genereated the
-                      exception. Useful to print a more meaningful error message
 
 ```
 

@@ -116,11 +116,7 @@ extern TRY_THREAD exception_t exception;
     if (exception_num > 0) longjmp(try_jmp_list->jmp_buffer, exception_num); \
   } while(0)
 
-#define rethrow(...)       try_throw( thrown(), __LINE__, __FILE__, __VA_ARGS__)
-#define thrown()           (exception.exception_num)
-#define thrownexception()  thrown() 
-#define thrownfile()       (exception.file_num)
-#define thrownline()       (exception.file_num)
+#define rethrow(...)       try_throw( exception.exception_num, __LINE__, __FILE__, __VA_ARGS__)
 
 #define leave(e)  if (!(try_jb.count = 2)); else continue;
 

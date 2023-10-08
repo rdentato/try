@@ -22,7 +22,7 @@ int main(int argc,char *argv[])
     tstout("FAIL: SHOULD NOT BE HERE.");
   }
   catch(EX_NODB) {
-    tstout("FAIL: GOT EXCEPTION %d.", thrown());
+    tstout("FAIL: GOT EXCEPTION %d.", exception.exception_num);
   }
   exit(1);
 }

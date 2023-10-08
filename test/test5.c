@@ -49,12 +49,12 @@ int main(int argc,char *argv[])
       tstout("PASS: Should have handled the exception!");
     }
     catch() {
-      tstout("FAIL: GOT EXCEPTION %d. (nested)", thrown());
+      tstout("FAIL: GOT EXCEPTION %d. (nested)", exception.exception_num);
     }
     tstout("PASS: Try completed");
   }
   catch() {
-    tstout("FAIL: GOT EXCEPTION %d. (main)", thrown());
+    tstout("FAIL: GOT EXCEPTION %d. (main)", exception.exception_num);
   }
 
   try {
@@ -64,13 +64,13 @@ int main(int argc,char *argv[])
       tstout("PASS: handled the exception!");
     }
     catch() {
-      tstout("FAIL: GOT EXCEPTION %d. (nested)", thrown());
+      tstout("FAIL: GOT EXCEPTION %d. (nested)", exception.exception_num);
       rethrow();
       tstout("FAIL: Should have rised an exception!");
     }
   }
   catch() {
-    tstout("PASS: GOT EXCEPTION %d. (main)", thrown());
+    tstout("PASS: GOT EXCEPTION %d. (main)", exception.exception_num);
   }
 
   try {
@@ -80,12 +80,12 @@ int main(int argc,char *argv[])
       tstout("FAIL: Should have raised the exception!");
     }
     catch() {
-      tstout("PASS: GOT EXCEPTION %d. (nested)", thrown());
+      tstout("PASS: GOT EXCEPTION %d. (nested)", exception.exception_num);
     }
     tstout("PASS: Try completed");
   }
   catch() {
-    tstout("FAIL: GOT EXCEPTION %d. (main)", thrown());
+    tstout("FAIL: GOT EXCEPTION %d. (main)", exception.exception_num);
   }
 
   try {
@@ -95,13 +95,13 @@ int main(int argc,char *argv[])
       tstout("FAIL: Should have handled the exception!");
     }
     catch() {
-      tstout("PASS: GOT EXCEPTION %d %d. (nested)", thrown(), try_jb.exception_num);
+      tstout("PASS: GOT EXCEPTION %d %d. (nested)", exception.exception_num, try_jb.exception_num);
       rethrow();
       tstout("FAIL: Should have rised an exception!");
     }
   }
   catch() {
-    tstout("PASS: GOT EXCEPTION %d. (main)", thrown());
+    tstout("PASS: GOT EXCEPTION %d. (main)", exception.exception_num);
   }
 
   exit(0);
