@@ -86,9 +86,7 @@ extern TRY_THREAD exception_t exception;
                             exception.exception_num,exception.file_name,exception.line_num))
 #endif
 
-#define try_ENV     { .prev_jmpbuf = try_jmp_list, .count = 0}
-
-#define try          for ( try_jb_t try_jb = try_ENV; \
+#define try          for ( try_jb_t try_jb = {.prev_jmpbuf = try_jmp_list, .count = 0}; \
                           (try_jb.count-- <= 0) && (try_jmp_list = &try_jb); \
                            try_jmp_list = try_jb.prev_jmpbuf, try_jb.count = (try_jb.exception_num == 0? 2 : try_jb.count)) \
                             if (try_jb.count < -1) { tryabort(); abort(); }\
@@ -105,18 +103,15 @@ extern TRY_THREAD exception_t exception;
 
 #define catch(...) catch__join(catch__ , catch__argn(catch__comma __VA_ARGS__ ()))(__VA_ARGS__)
 
-#define throw(exception_num_,...)  try_throw(exception_num_, __LINE__, __FILE__, __VA_ARGS__)
-
-#define try_throw(exception_num_, line_num_ , file_name_, ...) \
+#define throw(exception_num, ...) \
   do { \
-    unsigned short exception_num = exception_num_;\
     memset(&exception,0,sizeof(exception_t)); \
-    exception = ((exception_t){.exception_num = exception_num, .line_num=line_num_ , .file_name=file_name_, __VA_ARGS__});\
+    exception = ((exception_t){exception_num, __LINE__, __FILE__, __VA_ARGS__});\
     if (try_jmp_list == NULL) { tryabort(); abort(); } \
-    if (exception_num > 0) longjmp(try_jmp_list->jmp_buffer, exception_num); \
+    if (exception.exception_num > 0) longjmp(try_jmp_list->jmp_buffer, exception_num); \
   } while(0)
 
-#define rethrow(...)       try_throw( exception.exception_num, __LINE__, __FILE__, __VA_ARGS__)
+#define rethrow(...) throw(exception.exception_num, __VA_ARGS__)
 
 #define leave(e)  if (!(try_jb.count = 2)); else continue;
 

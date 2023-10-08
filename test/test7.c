@@ -6,10 +6,9 @@
 // These are the additional information you can add to an exception.
 // Define `exception_info` as a list of fields definition separated
 // by semicolon.
-#define exception_info   int  foo; char *bar;
+#define exception_info  int foo; char *bar;
 
 // The `exception` object will help you retrieving those information
-
 
 #include "try.h"
 
