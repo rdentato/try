@@ -9,7 +9,7 @@
 **  Discord server: https://discord.gg/QFzP9vaR8j
 */
 
-#ifndef TRY_VERSION // 0.3.1RC
+#ifndef TRY_VERSION // 0.3.1-rc
 #define TRY_VERSION    0x0003001C
 
 #include <stdio.h>
