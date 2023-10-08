@@ -123,6 +123,7 @@ It will move you to the end of the try/catch block.
 
                       Example:
                         #define exception_info  time_t time_stamp; int seq_num;
+                        #include "try.h"
                                                  
                         if you throw this exception:
 
