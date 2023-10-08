@@ -123,13 +123,13 @@ It will move you to the end of the try/catch block.
                            throw(ENOMEM, .time_stamp=time(NULL), global_seq++);
 
                         in the catch block, you can retrive the time stamp with 
-                        
+
                            exception.time_stamp
 
                         You can also only specify information by name:
                            throw(ENOMEM, .seq_num = global_seq++);
 
-  tryabort(e)         Is a function that is invoked when an unhandled exception
+  tryabort()          Is a function that is invoked when an unhandled exception
                       is triggered. It can be useful for printing an informative
                       message or doing some cleanup before aborting the program.
 
