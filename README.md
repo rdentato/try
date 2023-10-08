@@ -50,6 +50,12 @@ Simple and clean exception handling in C
   }
 
 ```
+Note that you can't put a try/catch block within a catch block.
+And you shouldn't, as this could be a sign that you are using try/catch to control
+the flow of your program rather than just handling exceptional events.
+
+Of course, you can nest as many try/catch block in a try block; even
+indirectly through function calls.
 
 ## Use try/catch in your program
 
