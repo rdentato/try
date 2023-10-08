@@ -99,7 +99,7 @@ It will move you to the end of the try/catch block.
 ```
   throw(exc [, ...])  Throws an exception (a positive integer).
                       The optional values are passed as part of the exception and 
-                      can be retrieved through the `exception` object.
+                      can be retrieved through the `exception` object (see below).
                       This can be useful to specify further information about the exception.
 
   rethrow([...])      Only usable in a catch block to throw the same exception (possibly
@@ -108,35 +108,26 @@ It will move you to the end of the try/catch block.
   exception           This object will help you getting the information about the
                       exception that had been thrown.
                       Default information are:
-                        exception->exception_num  (int)    The exception thrown 
-                        exception->file_name      (char *) The source file where it happened
-                        exception->line_num       (int)    The source line number where it happened
+                        exception.exception_num  (int)    The exception thrown 
+                        exception.file_name      (char *) The source file where it happened
+                        exception.line_num       (int)    The source line number where it happened
 
-                      Additional information can be specified by defining the macro:
-                        exception_info
-                      **before** including `try.h`
+                      Additional information can be specified by defining the macro `exception_info``
+                      **before** including `try.h`.
+
                       Example:
-                        #define exception_info  time_t time_stamp; \
-                                                int    seq_num;
+                        #define exception_info  time_t time_stamp; int seq_num;
                                                  
                         if you throw this exception:
 
                            throw(ENOMEM, .time_stamp=time(NULL), global_seq++);
 
-                        in the catch block, you can retrive, say, the time stamp with 
-                           expression->time_stamp
+                        in the catch block, you can retrive the time stamp with 
+                        
+                           exception.time_stamp
 
                         You can also only specify information by name:
                            throw(ENOMEM, .seq_num = global_seq++);
-
-  These functions are deprecated (but still there for code using older version of try.h)
-
-  thrownexception()   Only usable in a catch block to retrieve the exception
-  or thrown()         that has been caught. Only useful in a catch() block.
-
-  thrownfile()        Only usable in a catch block to retrieve the filename
-  thrownline()        and the line of the try/catch block that genereated the
-                      exception. Useful to print a more meaningful error message
 
   tryabort(e)         Is a function that is invoked when an unhandled exception
                       is triggered. It can be useful for printing an informative
@@ -144,16 +135,25 @@ It will move you to the end of the try/catch block.
 
                       The function can be easily overwritten:
  
-                          #define tryabort(e) my_handler(e)
+                          #define tryabort() my_handler()
                           #include "try.h"
  
-                          void my_handler(exception_t *e)
+                          void my_handler()
                           {
-                              fprintf(stderr,"Unhandled exception %d @ %s:%d\n",
-                                             e->exception_num,
-                                             e->file_name,
-                                             e->line_num);
+                              fprintf(stderr,"Something wrong (%d) at %s:%d\n",
+                                             exception.exception_num,
+                                             exception.file_name,
+                                             exception.line_num);
                           }
+
+NOTE: These functions are deprecated (but still there for code using older version of try.h)
+
+  thrownexception()   Only usable in a catch block to retrieve the exception
+  or thrown()         that has been caught. Only useful in a catch() block.
+
+  thrownfile()        Only usable in a catch block to retrieve the filename
+  thrownline()        and the line of the try/catch block that genereated the
+                      exception. Useful to print a more meaningful error message
 
 ```
 

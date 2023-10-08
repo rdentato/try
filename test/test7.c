@@ -27,7 +27,7 @@ int main(int argc,char *argv[])
     tstout("FAIL: Shouldn't be here in try");
   }
   catch(EX_OUTOFMEM) {
-    tstout("%s: foo == %d, bar == \"%s\" risen @ %s:%d",tstpass(exception->foo == 71),exception->foo, exception->bar, exception->file_name, exception->line_num);
+    tstout("%s: foo == %d, bar == \"%s\" risen @ %s:%d",tstpass(exception.foo == 71),exception.foo, exception.bar, exception.file_name, exception.line_num);
   }
   catch() {
     tstout("FAIL: Shouldn't be here in catch");
@@ -39,7 +39,7 @@ int main(int argc,char *argv[])
     tstout("FAIL: Shouldn't be here in try");
   }
   catch(EX_OUTOFMEM) {
-    tstout("%s: foo == %d, bar == \"%s\" risen @ %s:%d",tstpass(exception->foo == 0),exception->foo, exception->bar, exception->file_name, exception->line_num);
+    tstout("%s: foo == %d, bar == \"%s\" risen @ %s:%d",tstpass(exception.foo == 0),exception.foo, exception.bar, exception.file_name, exception.line_num);
   }
   catch() {
     tstout("FAIL: Shouldn't be here in catch");
@@ -58,15 +58,15 @@ int main(int argc,char *argv[])
       tstout("%s: Sequnce incremented: %d", 
              tstpass(seq == 7101), seq);
       tstout("%s: Nested handler seq: %d (seq = %d)",
-             tstpass(exception->exception_num == EX_NOFILE),
-             exception->foo, seq);
+             tstpass(exception.exception_num == EX_NOFILE),
+             exception.foo, seq);
       rethrow(.foo=seq++);
     }
   }
   catch() {
       tstout("%s: Outer handler seq: %d",
-             tstpass(exception->foo == 7101),
-             exception->foo);
+             tstpass(exception.foo == 7101),
+             exception.foo);
   }
 
 

@@ -3,13 +3,13 @@
 
 #include "trytest.h"
 
-#define tryabort(e) my_handler(e)
+#define tryabort() my_handler()
 
 #include "try.h"
 
-void my_handler(exception_t *e)
+void my_handler()
 {
-  fprintf(stderr,"PASS: Unhandled exception %d @ %s:%d\n",e->exception_num, e->file_name, e->line_num);
+  fprintf(stderr,"PASS: Unhandled exception %d @ %s:%d\n",exception.exception_num, exception.file_name, exception.line_num);
 }
 
 try_t catch = 0;

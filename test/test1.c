@@ -14,10 +14,10 @@ int main(int argc,char *argv[])
     tstout("PASS: No Exception");
   }
   catch(24) {
-    tstout("FAIL: GOT EXCEPTION %d.", exception->exception_num);
+    tstout("FAIL: GOT EXCEPTION %d.", exception.exception_num);
   }
   catch() {
-    tstout("FAIL: GOT EXCEPTION %d. (all)", exception->exception_num);
+    tstout("FAIL: GOT EXCEPTION %d. (all)", exception.exception_num);
   }
 
   try {
@@ -25,10 +25,10 @@ int main(int argc,char *argv[])
     tstout("FAIL: Should not be here\n");
   }
   catch(24) {
-    tstout("PASS: GOT EXCEPTION %d from: %s:%d.", exception->exception_num,exception->file_name, exception->line_num);
+    tstout("PASS: GOT EXCEPTION %d from: %s:%d.", exception.exception_num,exception.file_name, exception.line_num);
   }
   catch() {
-    tstout("FAIL: GOT EXCEPTION %d from: %s:%d.", exception->exception_num,exception->file_name, exception->line_num);
+    tstout("FAIL: GOT EXCEPTION %d from: %s:%d.", exception.exception_num,exception.file_name, exception.line_num);
   }
 
   try {
@@ -36,10 +36,10 @@ int main(int argc,char *argv[])
     tstout("FAIL: Should not be here\n");
   }
   catch(24) {
-    tstout("FAIL: GOT EXCEPTION %d.", exception->exception_num);
+    tstout("FAIL: GOT EXCEPTION %d.", exception.exception_num);
   }
   catch() {
-    tstout("PASS: GOT DEFAULT EXCEPTION %d from: %s:%d.", exception->exception_num,exception->file_name, exception->line_num);
+    tstout("PASS: GOT DEFAULT EXCEPTION %d from: %s:%d.", exception.exception_num,exception.file_name, exception.line_num);
   }
   exit(0);
 }
