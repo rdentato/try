@@ -4,44 +4,13 @@
 ** This software is distributed under the terms of the MIT license:
 **  https://opensource.org/licenses/MIT
 **     
+**
+**  Full documentation on https://github.com/rdentato/try
+**  Discord server: https://discord.gg/QFzP9vaR8j
+*/
 
-[[[
-# Exceptions
-
- Simple implementation of try/catch. try blocks can be nested.
- Exceptions are positive integers
- 
-  #define OUTOFMEM    1
-  #define WRONGINPUT  2
-  #define INTERNALERR 3
-
-  void some_other_function()
-  {
-     ... code ...
-     throw(WRONGINPUT); // will be handled in the parent function
-     ... code ...
-  }
-  
-  try {
-     ... code ...
-     if (something_failed) throw(OUTOFMEM);  // must be > 0 
-     some_other_func(); // you can trhow exceptions from other functions too 
-     ... code ...
-  }  
-  catch(OUTOFMEM) {
-     ... code ...
-  }
-  catch(WRONGINPUT) {
-     ... code ...
-  }
-  catch() {  // if not handled ...
-     ... code ...
-  }
-                 
-]]] */
-
-#ifndef TRY_VERSION
-#define TRY_VERSION 0x0003001C
+#ifndef TRY_VERSION // 0.3.1RC
+#define TRY_VERSION    0x0003001C
 
 #include <stdio.h>
 #include <setjmp.h>
@@ -59,10 +28,10 @@ typedef struct exception_s {
 } exception_t;
 
 typedef struct try_jb_s {
-  jmp_buf          jmp_buffer;     // Jump buffer for setjmp/longjmp
-  struct try_jb_s *prev_jmpbuf;    // Link to parent for nested try
-  int              exception_num;  // Exception number
-  int              count;          // Counter
+  jmp_buf          jmp_buffer;     
+  struct try_jb_s *prev_jmpbuf;    // Link to parent try block for nested try
+  int              exception_num;
+  int              count;
 } try_jb_t;
 
 // If you compiler doesn't support thread local variables, just compile with TRY_THREAD defined as empty.
@@ -111,8 +80,10 @@ extern TRY_THREAD exception_t exception;
     if (exception.exception_num > 0) longjmp(try_jmp_list->jmp_buffer, exception.exception_num); \
   } while(0)
 
+// Pass the same exception to parent try/catch block
 #define rethrow(...) throw(try_jb.exception_num, __VA_ARGS__)
 
+// Quit a try/block in a clean way
 #define leave(e)  if (!(try_jb.count = 2)); else continue;
 
 #endif  // TRY_VERSION
