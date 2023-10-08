@@ -35,7 +35,7 @@ int main(int argc,char *argv[])
     tstout("FAIL: No Exception!");
   }
   catch(EX_OUTOFMEM) {
-    tstout("PASS: GOT EXCEPTION %d.", exception.exception_num);
+    tstout("%s: GOT EXCEPTION %d.", tstpass(exception.exception_num == EX_OUTOFMEM), exception.exception_num);
   }
   catch() {
     tstout("FAIL: GOT EXCEPTION %d. (all)", exception.exception_num);

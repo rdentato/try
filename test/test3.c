@@ -31,7 +31,7 @@ int function_2(int exc)
      } 
      catch() {
        tstout("PASS: Exception %d caught (err=%d)", exception.exception_num, exception.err);
-       rethrow();
+       rethrow(3);
        tstout("FAIL: Should be re-rised");
      }
      tstout("FAIL: Should be re-rised");
