@@ -95,7 +95,7 @@ int main(int argc,char *argv[])
       tstout("FAIL: Should have handled the exception!");
     }
     catch() {
-      tstout("PASS: GOT EXCEPTION %d %d. (nested)", exception.exception_num, try_jb.exception_num);
+      tstout("PASS: GOT EXCEPTION %d. (nested)", exception.exception_num);
       rethrow();
       tstout("FAIL: Should have rised an exception!");
     }

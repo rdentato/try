@@ -9,7 +9,7 @@
 
 void my_handler()
 {
-  fprintf(stderr,"PASS: Unhandled exception %d @ %s:%d\n",exception.exception_num, exception.file_name, exception.line_num);
+  fprintf(stderr,"PASS: Unhandled (managed) exception %d @ %s:%d\n",exception.exception_num, exception.file_name, exception.line_num);
 }
 
 try_t catch = 0;

@@ -1,15 +1,15 @@
 rm -f ut_* try.o
 
-${CC:-gcc} -std=c99 -I.. -o try.o -c ../try.c
+${CC:-gcc} -O2 -std=c99 -I.. -o try.o -c ../try.c
 
 for f in t*.c; do
   echo "compiling '$f'"
-  ${CC:-gcc} -std=c99 -I.. -o ut_${f%.c} $f
+  ${CC:-gcc} -O2 -std=c99 -I.. -o ut_${f%.c} $f
 done
 
 for f in lt*.c; do
   echo "compiling '$f'"
-  ${CC:-gcc} -std=c99 -I.. -o ut_${f%.c} $f try.o
+  ${CC:-gcc} -O2 -std=c99 -I.. -o ut_${f%.c} $f try.o
 done
 
 rm -f runtest.log

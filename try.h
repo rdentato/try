@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <setjmp.h>
 #include <string.h>
+#include <stdlib.h>
 
 #ifndef exception_info
 #define exception_info 
@@ -29,9 +30,9 @@ typedef struct exception_s {
 
 typedef struct try_jb_s {
   jmp_buf          jmp_buffer;     
-  struct try_jb_s *prev_jmpbuf;    // Link to parent try block for nested try
-  int              exception_num;
-  int              count;
+  volatile struct try_jb_s *prev_jmpbuf;    // Link to parent try block for nested try
+  volatile int     exception_num;
+  volatile int     caught;
 } try_jb_t;
 
 // If you compiler doesn't support thread local variables, just compile with TRY_THREAD defined as empty.
@@ -50,19 +51,23 @@ extern TRY_THREAD exception_t exception;
 // For example: try_t catch = 0;
 #define try_t TRY_THREAD try_jb_t *try_jmp_list=NULL; exception_t TRY_THREAD exception; int
 
+static int try_abort() {abort(); return 1;}
+
 #ifndef tryabort
 #define tryabort() (fprintf(stderr,"ERROR: Unhandled exception %d. %s:%d\n",\
                             exception.exception_num,exception.file_name,exception.line_num))
 #endif
 
-#define try          for ( try_jb_t try_jb = {.prev_jmpbuf = try_jmp_list, .count = 0}; \
-                          (try_jb.count-- <= 0) && (try_jmp_list = &try_jb); \
-                           try_jmp_list = try_jb.prev_jmpbuf, try_jb.count = (try_jb.exception_num == 0? 2 : try_jb.count)) \
-                            if (try_jb.count < -1) { tryabort(); abort(); }\
-                       else if ((try_jb.exception_num = setjmp(try_jb.jmp_buffer)) == 0) 
+#define try          for ( try_jb_t try_jb = {.exception_num = 0, .prev_jmpbuf = try_jmp_list, .caught = -1 }; \
+                          (try_jb.exception_num > 0 && !try_jb.caught) ? (tryabort(), try_abort()) \
+                                                                       : ((try_jb.caught++ < 0) && (try_jmp_list = &try_jb)); \
+                           try_jmp_list = (try_jb_t *)(try_jb.prev_jmpbuf)) \
+                       if (!setjmp(try_jb.jmp_buffer)) 
 
-#define catch__1(x)    else if ((try_jb.exception_num == (x)) && (try_jmp_list=try_jb.prev_jmpbuf, try_jb.count=2)) 
-#define catch__0( )    else for (try_jmp_list=try_jb.prev_jmpbuf; try_jb.count < 0; try_jb.count=2) 
+#define catch__1(x)    else if ((try_jb.exception_num == (x)) && catch__actions()) 
+#define catch__0( )    else if (!catch__actions()); else
+
+#define catch__actions() (try_jmp_list=(try_jb_t *)(try_jb.prev_jmpbuf), try_jb.caught = 1)
 
 #define catch__cnt(x,y,z,N, ...) N
 #define catch__argn(...)       catch__cnt(__VA_ARGS__, 2, 0, 1)
@@ -77,6 +82,7 @@ extern TRY_THREAD exception_t exception;
     memset(&exception,0,sizeof(exception_t)); \
     exception = ((exception_t){exc, __LINE__, __FILE__, __VA_ARGS__});\
     if (try_jmp_list == NULL) { tryabort(); abort(); } \
+    try_jmp_list->exception_num = exception.exception_num; \
     if (exception.exception_num > 0) longjmp(try_jmp_list->jmp_buffer, exception.exception_num); \
   } while(0)
 
@@ -84,6 +90,6 @@ extern TRY_THREAD exception_t exception;
 #define rethrow(...) throw(try_jb.exception_num, __VA_ARGS__)
 
 // Quit a try/block in a clean way
-#define leave(e)  if (!(try_jb.count = 2)); else continue;
+#define leave()  continue;
 
 #endif  // TRY_VERSION
