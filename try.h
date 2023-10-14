@@ -64,10 +64,8 @@ static int try_abort() {abort(); return 1;}
                            try_jmp_list = (try_jb_t *)(try_jb.prev_jmpbuf)) \
                        if (!setjmp(try_jb.jmp_buffer)) 
 
-#define catch__1(x)    else if ((try_jb.exception_num == (x)) && catch__actions()) 
-#define catch__0( )    else if (!catch__actions()); else
-
-#define catch__actions() (try_jmp_list=(try_jb_t *)(try_jb.prev_jmpbuf), try_jb.caught = 1)
+#define catch__1(x)    else if ((try_jb.exception_num == (x)) && (try_jb.caught=1)) 
+#define catch__0( )    else if (!(try_jb.caught=1)) ; else
 
 #define catch__cnt(x,y,z,N, ...) N
 #define catch__argn(...)       catch__cnt(__VA_ARGS__, 2, 0, 1)
@@ -87,7 +85,7 @@ static int try_abort() {abort(); return 1;}
   } while(0)
 
 // Pass the same exception to parent try/catch block
-#define rethrow(...) throw(try_jb.exception_num, __VA_ARGS__)
+#define rethrow(...) do {try_jmp_list=(try_jb_t *)(try_jb.prev_jmpbuf); throw(try_jb.exception_num, __VA_ARGS__);} while(0)
 
 // Quit a try/block in a clean way
 #define leave()  continue;
