@@ -51,7 +51,7 @@ extern TRY_THREAD exception_t exception;
 // For example: try_t catch = 0;
 #define try_t TRY_THREAD try_jb_t *try_jmp_list=NULL; exception_t TRY_THREAD exception; int
 
-static int try_abort() {abort(); return 1;}
+static inline int try_abort() {abort(); return 1;}
 
 #ifndef tryabort
 #define tryabort() (fprintf(stderr,"ERROR: Unhandled exception %d. %s:%d\n",\
