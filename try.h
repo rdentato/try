@@ -59,8 +59,8 @@ static inline int try_abort() {abort(); return 1;}
 #endif
 
 #define try          for ( try_jb_t try_jb = {.exception_num = 0, .prev_jmpbuf = try_jmp_list, .caught = -1 }; \
-                          (try_jb.exception_num > 0 && !try_jb.caught) ? (tryabort(), try_abort()) \
-                                                                       : ((try_jb.caught++ < 0) && (try_jmp_list = &try_jb)); \
+                          (try_jb.exception_num && !try_jb.caught) ? (tryabort(), try_abort()) \
+                                                                   : ((try_jb.caught++ < 0) && (try_jmp_list = &try_jb)); \
                            try_jmp_list = (try_jb_t *)(try_jb.prev_jmpbuf)) \
                        if (!setjmp(try_jb.jmp_buffer)) 
 
@@ -75,13 +75,15 @@ static inline int try_abort() {abort(); return 1;}
 
 #define catch(...) catch__join(catch__ , catch__argn(catch__comma __VA_ARGS__ ()))(__VA_ARGS__)
 
+// To be consistent with setjmp/longjmp behaviour, if `exc` is 0, it is set to 1.
 #define throw(exc, ...) \
   do { \
     memset(&exception,0,sizeof(exception_t)); \
     exception = ((exception_t){exc, __LINE__, __FILE__, __VA_ARGS__});\
+    if (exception.exception_num == 0) exception.exception_num = 1; \
     if (try_jmp_list == NULL) { tryabort(); abort(); } \
     try_jmp_list->exception_num = exception.exception_num; \
-    if (exception.exception_num > 0) longjmp(try_jmp_list->jmp_buffer, exception.exception_num); \
+    longjmp(try_jmp_list->jmp_buffer, exception.exception_num); \
   } while(0)
 
 // Pass the same exception to parent try/catch block
