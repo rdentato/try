@@ -50,7 +50,7 @@ int main(int argc,char *argv[])
     tstout("FAIL: Shouldn't have caught 'EX_FILE_NOT_FOUND'");
   }
   catch(ex_file) {
-    tstout("PASS: Got some EX_FILE exception");
+    tstout("PASS: Got some EX_FILE exception (%04X)",exception.exception_num);
   }
   catch() {
     tstout("FAIL: Shouldn't be here in catch");
@@ -70,8 +70,5 @@ try {
     tstout("PASS: Got some non-EX_FILE exception");
   }
 
-
-  #if 0
-  #endif
   exit(0);
 }
