@@ -89,9 +89,9 @@ static inline int catch__eq(int x, int e) {return x == e;}
   } while(0)
 
 // Pass the same exception to parent try/catch block
-#define rethrow(...) throw(try_ctx.exception_num, __VA_ARGS__);
+#define rethrow(...) throw(try_ctx.exception_num, __VA_ARGS__)
 
 // Quit a try/block in a clean way
-#define leave() continue;
+#define leave() continue
 
 #endif  // TRY_VERSION
