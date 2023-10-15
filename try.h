@@ -56,7 +56,7 @@ static inline int try_abort() {abort(); return 1;}
 
 #define try        for ( try_ctx_t try_ctx = {.exception_num = 0, .prev_ctx = try_ctx_list, .caught = -1 }; \
                         (try_ctx.exception_num && !try_ctx.caught)   ? \
-                                           (tryabort(), try_abort()) : 
+                                           (tryabort(), try_abort()) : \
                                            ((try_ctx.caught++ < 0) && (try_ctx_list = &try_ctx)); \
                          try_ctx_list = (try_ctx_t *)(try_ctx.prev_ctx)) \
                      if (setjmp(try_ctx.jmp_buffer) == 0) 
