@@ -16,9 +16,9 @@ try_t catch=0;
 // This functions will recieve the currently thrown exception
 // If it returns 0, it means that it is to be ignored. If it
 // returns a non-zero value, the catch block will be executed.
-int ex_file(int x) 
+int any_ex_file(int ex) 
 {
-  return (x & EX_FILE) == EX_FILE;
+  return ((ex & 0xFFFFFF00) == EX_FILE);
 }
 
 int main(int argc,char *argv[])
@@ -30,8 +30,8 @@ int main(int argc,char *argv[])
   catch(EX_FILE_NOT_FOUND) {
     tstout("PASS: Got 'EX_FILE_NOT_FOUND'");
   }
-  catch(ex_file) {
-    tstout("FAIL: Shouldn't be here in ex_file");
+  catch(any_ex_file) {
+    tstout("FAIL: Shouldn't be here in any_ex_file");
   }
   catch() {
     tstout("FAIL: Shouldn't be here in catch");
@@ -44,7 +44,7 @@ int main(int argc,char *argv[])
   catch(EX_FILE_NOT_FOUND) {
     tstout("FAIL: Shouldn't have caught 'EX_FILE_NOT_FOUND'");
   }
-  catch(ex_file) {
+  catch(any_ex_file) {
     tstout("PASS: Got some EX_FILE exception (%04X)",exception.exception_num);
   }
   catch() {
@@ -58,11 +58,11 @@ try {
   catch(EX_FILE_NOT_FOUND) {
     tstout("FAIL: Shouldn't have caught 'EX_FILE_NOT_FOUND'");
   }
-  catch(ex_file) {
-    tstout("FAIL: Shouldn't be here in ex_file");
+  catch(any_ex_file) {
+    tstout("FAIL: Shouldn't be here in any_ex_file");
   }
   catch() {
-    tstout("PASS: Got some non-EX_FILE exception");
+    tstout("PASS: Got some non-EX_FILE exception (%04X)",exception.exception_num);
   }
 
   exit(0);
