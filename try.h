@@ -55,27 +55,29 @@ extern TRY_THREAD exception_t exception;
 static inline int try_abort() {abort(); return 1;}
 
 #define try        for ( try_ctx_t try_ctx = {.exception_num = 0, .prev_ctx = try_ctx_list, .caught = -1 }; \
-                        (try_ctx.exception_num && !try_ctx.caught) ? (tryabort(), try_abort()) \
-                                                                   : ((try_ctx.caught++ < 0) && (try_ctx_list = &try_ctx)); \
+                        (try_ctx.exception_num && !try_ctx.caught)   ? \
+                                           (tryabort(), try_abort()) : 
+                                           ((try_ctx.caught++ < 0) && (try_ctx_list = &try_ctx)); \
                          try_ctx_list = (try_ctx_t *)(try_ctx.prev_ctx)) \
                      if (setjmp(try_ctx.jmp_buffer) == 0) 
 #define catch__1(x)  else if (catch__check(x) && catch__caught()) 
 #define catch__0( )  else if (!catch__caught()) ; else
 
-#define catch__check(x) _Generic((x),  int(*)(int):((int(*)(int))(x))(try_ctx.exception_num), \
-                                       default:catch__eq((int)((uintptr_t)(x)),try_ctx.exception_num))
+// The argument to `catch()` can be an integer or a function from integers to integers
+#define catch__check(x) _Generic((x), int(*)(int): ((int(*)(int))(x))(try_ctx.exception_num), \
+                                          default: catch__eq((int)((uintptr_t)(x)),try_ctx.exception_num) )
 
 static inline int catch__eq(int x, int e) {return x == e;}
 
 #define catch__caught() (try_ctx_list=(try_ctx_t *)(try_ctx.prev_ctx),try_ctx.caught=1)
 
 #define catch__cnt(x,y,z,N, ...) N
-#define catch__argn(...)       catch__cnt(__VA_ARGS__, 2, 0, 1)
-#define catch__comma(...)      ,
-#define catch__cat2(x, y,...)  x ## y
-#define catch__join(x, y)      catch__cat2(x, y)
+#define catch__numargs(...)      catch__cnt(__VA_ARGS__, 2, 0, 1)
+#define catch__comma(...)        ,
+#define catch__cat2(x, y,...)    x ## y
+#define catch__join(x, y)        catch__cat2(x, y)
 
-#define catch(...) catch__join(catch__, catch__argn(catch__comma __VA_ARGS__ ()))(__VA_ARGS__)
+#define catch(...) catch__join(catch__, catch__numargs(catch__comma __VA_ARGS__ ()))(__VA_ARGS__)
 
 // To be consistent with setjmp/longjmp behaviour, if `exc` is 0, it is set to 1.
 #define throw(exc, ...) \
