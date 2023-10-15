@@ -1,21 +1,18 @@
-/*
-**  (C) by Remo Dentato (rdentato@gmail.com)
+/*  (C) by Remo Dentato (rdentato@gmail.com)
 ** 
-** This software is distributed under the terms of the MIT license:
-**  https://opensource.org/licenses/MIT
-**     
-**
-**  Full documentation on https://github.com/rdentato/try
-**  Discord server: https://discord.gg/QFzP9vaR8j
+**  License:         https://opensource.org/licenses/MIT
+**  Documentation:   https://github.com/rdentato/try
+**  Discord server:  https://discord.gg/QFzP9vaR8j
 */
 
-#ifndef TRY_VERSION // 0.3.1-rc
-#define TRY_VERSION    0x0003001C
+#ifndef TRY_VERSION // 0.3.3-rc
+#define TRY_VERSION    0x0003003C
 
 #include <stdio.h>
 #include <setjmp.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #ifndef exception_info
 #define exception_info 
@@ -64,8 +61,12 @@ static inline int try_abort() {abort(); return 1;}
                            try_jmp_list = (try_jb_t *)(try_jb.prev_jmpbuf)) \
                        if (!setjmp(try_jb.jmp_buffer)) 
 
-#define catch__1(x)    else if ((try_jb.exception_num == (x)) && catch__caught()) 
 #define catch__0( )    else if (!catch__caught()) ; else
+#define catch__1(x)    else if (catch__check(x) && catch__caught()) 
+
+static inline int catch__eq(int x,int e) {return x == e;}
+#define catch__check(x) _Generic((x),  int(*)(int):((int(*)(int))(x))(try_jb.exception_num), \
+                                       default:catch__eq((int)((uintptr_t)(x)),try_jb.exception_num))
 
 #define catch__caught() (try_jmp_list=(try_jb_t *)(try_jb.prev_jmpbuf),try_jb.caught=1)
 
@@ -92,6 +93,6 @@ static inline int try_abort() {abort(); return 1;}
 #define rethrow(...) throw(try_jb.exception_num, __VA_ARGS__);
 
 // Quit a try/block in a clean way
-#define leave()  continue;
+#define leave() continue;
 
 #endif  // TRY_VERSION

@@ -50,8 +50,8 @@ Simple and clean exception handling in C
   }
 
 ```
-Note that you can't put a try/catch block within a catch block.
-And you shouldn't, as this could be a sign that you are using try/catch to control
+Note that you can't put a try/catch block within a catch block,
+and you shouldn't, as this could be a sign that you are using try/catch to control
 the flow of your program rather than just handling exceptional events.
 
 Of course, you can nest as many try/catch block in a try block; even
@@ -87,6 +87,13 @@ See the tests in the `test` directory for some example.
      // exception is thrown within the try block
      if (something) leave(); // Only exit via `leave()`
      ... do something else ...
+  }
+  catch(check_function) { 
+     // The speficied function (with signature int f(int x)) is
+     // called passing the exception number as the argument.
+     // The block of code is executed if the functions returns 
+     // a non-zero value
+     ... do something ...
   }
   catch() {
      // Block of code that is executed if no other handler
