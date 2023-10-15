@@ -31,8 +31,8 @@ typedef struct try_ctx_s {                    // Context variables for a try blo
   volatile              int  caught;          // Non-zero if an exception has been caught in this context
 } try_ctx_t;
 
-// If you compiler has a different keyword for thread local variables, define TRY_THREAD 
-// before including `try.h`. Define as empty if there is no support at all.
+// If your compiler has a different keyword for thread local variables, define TRY_THREAD 
+// before including `try.h`. Define it as empty if there is no support at all.
 #ifndef TRY_THREAD
 #ifdef _MSC_VER
   #define TRY_THREAD __declspec( thread )
