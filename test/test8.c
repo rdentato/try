@@ -3,14 +3,6 @@
 #include <stdlib.h>
 
 #include "trytest.h"
-
-// These are the additional information you can add to an exception.
-// Define `exception_info` as a list of fields definition separated
-// by semicolon.
-#define exception_info  int foo; char *bar;
-
-// The `exception` object will help you retrieving those information
-
 #include "try.h"
 
 try_t catch=0;
@@ -21,6 +13,9 @@ try_t catch=0;
 #define EX_FILE_NOT_READABLE    EX_FILE | 0x03
 #define EX_FILE_IS_DIRECOTRY    EX_FILE | 0x04
 
+// This functions will recieve the currently thrown exception
+// If it returns 0, it means that it is to be ignored. If it
+// returns a non-zero value, the catch block will be executed.
 int ex_file(int x) 
 {
   return (x & EX_FILE) == EX_FILE;
