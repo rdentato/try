@@ -21,7 +21,7 @@ typedef struct exception_s {
    int   exception_num;
    int   line_num;
    char *file_name;
-   exception_info;  // single semicolon (when the macro is empty) allowed by ISO/IEC 9899:1999 (C99) §6.7.2.1
+   exception_info
 } exception_t;
 
 typedef struct try_ctx_s {                    // Context variables for a try block
@@ -33,6 +33,7 @@ typedef struct try_ctx_s {                    // Context variables for a try blo
 
 // If your compiler has a different keyword for thread local variables, define TRY_THREAD 
 // before including `try.h`. Define it as empty if there is no support at all.
+//#define TRY_THREAD
 #ifndef TRY_THREAD
 #ifdef _MSC_VER
   #define TRY_THREAD __declspec( thread )
@@ -60,24 +61,17 @@ static inline int try_abort() {abort(); return 1;}
                                            ((try_ctx.caught++ < 0) && (try_ctx_list = &try_ctx)); \
                          try_ctx_list = (try_ctx_t *)(try_ctx.prev_ctx)) \
                      if (setjmp(try_ctx.jmp_buffer) == 0) 
-#define catch__1(x)  else if (catch__check(x) && catch__caught()) 
-#define catch__0( )  else if (!catch__caught()) ; else
+
+#define catch(...)   else if (catch__check(__VA_ARGS__ +0) && catch__caught()) 
 
 // The argument to `catch()` can be an integer or a function from integers to integers
-#define catch__check(x) _Generic((x), int(*)(int): ((int(*)(int))(x))(try_ctx.exception_num), \
-                                          default: catch__eq((int)((uintptr_t)(x)),try_ctx.exception_num) )
+#define catch__check(x) _Generic((x), int(*)(int): (((int(*)(int))(x)) == NULL) || ((int(*)(int))(x))(try_ctx.exception_num), \
+                                          default: ((int)((uintptr_t)(x)) == 0) || catch__eq((int)((uintptr_t)(x)),try_ctx.exception_num) )
 
 static inline int catch__eq(int x, int e) {return x == e;}
 
 #define catch__caught() (try_ctx_list=(try_ctx_t *)(try_ctx.prev_ctx),try_ctx.caught=1)
 
-#define catch__cnt(x,y,z,N, ...) N
-#define catch__numargs(...)      catch__cnt(__VA_ARGS__, 2, 0, 1)
-#define catch__comma(...)        ,
-#define catch__cat2(x, y,...)    x ## y
-#define catch__join(x, y)        catch__cat2(x, y)
-
-#define catch(...) catch__join(catch__, catch__numargs(catch__comma __VA_ARGS__ ()))(__VA_ARGS__)
 
 // To be consistent with setjmp/longjmp behaviour, if `exc` is 0, it is set to 1.
 #define throw(exc, ...) \

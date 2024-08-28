@@ -82,20 +82,20 @@ See the tests in the `test` directory for some example.
      a_function();        // possibly generated
                           // in a function called by this block
   }
-  catch(an_exception) { 
+  catch(an_exception) {   // a positive integer
      // Block of code that is executed if the specified
      // exception is thrown within the try block
      if (something) leave(); // Only exit via `leave()`
      ... do something else ...
   }
-  catch(check_function) { 
-     // The speficied function (with signature int f(int x)) is
+  catch(check_function) { // a function `int f(int)`
+     // The specified function (with signature int f(int x)) is
      // called passing the exception number as the argument.
      // The block of code is executed if the functions returns 
      // a non-zero value
      ... do something ...
   }
-  catch() {
+  catch() { // nothing
      // Block of code that is executed if no other handler
      // catches the exception. It is highly reccomended to 
      // ALWAYS have a catch() block; unhandled exceptions

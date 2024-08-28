@@ -8,10 +8,10 @@
 try_t catch=0;
 
 #define EX_FILE                 0x1000
-#define EX_FILE_NOT_FOUND       EX_FILE | 0x01
-#define EX_FILE_NOT_WRITEABLE   EX_FILE | 0x02
-#define EX_FILE_NOT_READABLE    EX_FILE | 0x03
-#define EX_FILE_IS_DIRECOTRY    EX_FILE | 0x04
+#define EX_FILE_NOT_FOUND       (EX_FILE | 0x01)
+#define EX_FILE_NOT_WRITEABLE   (EX_FILE | 0x02)
+#define EX_FILE_NOT_READABLE    (EX_FILE | 0x03)
+#define EX_FILE_IS_DIRECOTRY    (EX_FILE | 0x04)
 
 // This functions will recieve the currently thrown exception
 // If it returns 0, it means that it is to be ignored. If it
