@@ -15,7 +15,7 @@ Simple and clean exception handling in C
   #define INTERNALERR 3
 
   // Define a variable of type `try_t` for the use of the library
-  try_t catch = 0;
+  try_t trymain = 1;
 
   void some_other_func() 
   {
@@ -63,7 +63,7 @@ indirectly through function calls.
    from youre source files. 
 
  - In one (and only one) of your source files define a global variable
-   of type `try_t` and set it to 0 (I suggest using `try_t catch = 0;`)
+   of type `try_t` and set it to 0 (I suggest using `try_t trymain = 1;`)
    The library needs this definition to keep track of `try` blocks nesting
    it is not supposed to be used or changed by the programmer.
 
