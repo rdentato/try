@@ -3,7 +3,7 @@
 
 #include "trytest.h"
 
-#define exception_info int err;
+#define catch_info int err;
 
 #include "try.h"
 
@@ -14,7 +14,7 @@ int function_1(int exc)
    return exc;
 }
 
-try_t catch = 0;
+try_t trymain = 1;
 
 int main(int argc,char *argv[])
 {
@@ -24,10 +24,10 @@ int main(int argc,char *argv[])
     tstout("PASS: No Exception");
   }
   catch(EX_OUTOFMEM) {
-    tstout("FAIL: GOT EXCEPTION %d.", exception.exception_num);
+    tstout("FAIL: GOT EXCEPTION %d.", catch.exception);
   }
   catch() {
-    tstout("FAIL: GOT EXCEPTION %d. (all)", exception.exception_num);
+    tstout("FAIL: GOT EXCEPTION %d. (all)", catch.exception);
   }
 
   try {
@@ -35,10 +35,10 @@ int main(int argc,char *argv[])
     tstout("FAIL: No Exception!");
   }
   catch(EX_OUTOFMEM) {
-    tstout("%s: GOT EXCEPTION %d.", tstpass(exception.exception_num == EX_OUTOFMEM), exception.exception_num);
+    tstout("%s: GOT EXCEPTION %d.", tstpass(catch.exception == EX_OUTOFMEM), catch.exception);
   }
   catch() {
-    tstout("FAIL: GOT EXCEPTION %d. (all)", exception.exception_num);
+    tstout("FAIL: GOT EXCEPTION %d. (all)", catch.exception);
   }
 
   try {
@@ -46,10 +46,10 @@ int main(int argc,char *argv[])
     tstout("FAIL: No Exception!");
   }
   catch(EX_OUTOFMEM) {
-    tstout("FAIL: GOT EXCEPTION %d.", exception.exception_num);
+    tstout("FAIL: GOT EXCEPTION %d.", catch.exception);
   }
   catch() {
-    tstout("PASS: GOT EXCEPTION %d. (all)", exception.exception_num);
+    tstout("PASS: GOT EXCEPTION %d. (all)", catch.exception);
   }
 
   exit(0);

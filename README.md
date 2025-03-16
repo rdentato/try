@@ -15,6 +15,8 @@ Simple and clean exception handling in C
   #define INTERNALERR 3
 
   // Define a variable of type `try_t` for the use of the library
+  // Using `trymain = 1` is idiomatic and suggested.
+
   try_t trymain = 1;
 
   void some_other_func() 
@@ -29,30 +31,30 @@ Simple and clean exception handling in C
     try {
        ... code ...
        if (something_failed) 
-         throw(execption_num)  // exception_num must be between 1 and 65535 
+         throw(execption)      // exceptions are numbers between 1 and 65535 
    
-       some_other_func();      // you can throw exceptions
-                               // from other functions 
+       some_other_func();      // you can throw exceptions from other functions 
    
        ... code ...            // You MUST NEVER jump out of a try/catch block
-                               // (via return, goto or break). Use throw() to
-                               // ensure the right behaviour.
+                               // (via return, goto or break). Use throw() in case of
+                               // error or just let the try block complete.
      }  
      catch(OUTOFMEM) {
-       ... code ...
+       ... code ...            // Code executed if the `OUTOFMEM` exception is thrown.
      }
      catch(WRONGINPUT) {
        ... code ...
      }
-     catch() {                 // catch any other exception
-       ... code ...            // otherwise the progam would abort.
-     }
+     catch() {                 // catch any other exception. If the default catcheer
+       ... code ...            // is not defined and an underfined exception is thrown,
+     }                         // the program will abort.
   }
 
 ```
+
 Note that you can't put a try/catch block within a catch block,
 and you shouldn't, as this could be a sign that you are using try/catch to control
-the flow of your program rather than just handling exceptional events.
+the flow of your program rather than just handling error events.
 
 Of course, you can nest as many try/catch block in a try block; even
 indirectly through function calls.
@@ -60,10 +62,10 @@ indirectly through function calls.
 ## Use try/catch in your program
 
  - Set your INCLUDE PATH so that `try.h` is reachable and include it
-   from youre source files. 
+   from your source files. 
 
  - In one (and only one) of your source files define a global variable
-   of type `try_t` and set it to 0 (I suggest using `try_t trymain = 1;`)
+   of type `try_t` and set it to 1 (I suggest using `try_t trymain = 1;`)
    The library needs this definition to keep track of `try` blocks nesting
    it is not supposed to be used or changed by the programmer.
 
@@ -118,18 +120,20 @@ It will move you to the end of the try/catch block.
   rethrow([...])      Only usable in a catch block to throw the same exception (possibly
                       with new additional information).
 
-  exception           This object will help you getting the information about the
+  catch               This object will help you getting the information about the
                       exception that had been thrown.
                       Default information are:
-                        exception.exception_num  (int)    The exception thrown 
-                        exception.file_name      (char *) The source file where it happened
-                        exception.line_num       (int)    The source line number where it happened
+                        catch.exception  (int)    The exception thrown 
+                        catch.filename   (char *) The source file where it happened
+                        catch.line       (int)    The source line number where it happened
 
-                      Additional information can be specified by defining the macro `exception_info`
+                      Additional information can be specified by defining the macro `catch_info`
                       **before** including `try.h`.
 
                       Example:
-                        #define exception_info  time_t time_stamp; int seq_num;
+                        #define catch_info  \
+                                     time_t time_stamp; \
+                                     int seq_num;
                         #include "try.h"
                                                  
                         if you throw this exception:
@@ -138,7 +142,7 @@ It will move you to the end of the try/catch block.
 
                         in the catch block, you can retrive the time stamp with 
 
-                           exception.time_stamp
+                           catch.time_stamp
 
                         You can also only specify information by name:
                            throw(ENOMEM, .seq_num = global_seq++);
@@ -155,9 +159,9 @@ It will move you to the end of the try/catch block.
                           void my_handler()
                           {
                               fprintf(stderr,"Something wrong (%d) at %s:%d\n",
-                                             exception.exception_num,
-                                             exception.file_name,
-                                             exception.line_num);
+                                             catch.exception,
+                                             catch.filename,
+                                             catch.line);
                           }
 
 

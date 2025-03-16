@@ -5,7 +5,7 @@
 
 #include "try.h"
 
-try_t catch = 0;
+try_t trymain = 1;
 
 int main(int argc,char *argv[])
 {
@@ -14,10 +14,10 @@ int main(int argc,char *argv[])
     tstout("PASS: No Exception");
   }
   catch(24) {
-    tstout("FAIL: GOT EXCEPTION %d.", exception.exception_num);
+    tstout("FAIL: GOT EXCEPTION %d.", catch.exception);
   }
   catch() {
-    tstout("FAIL: GOT EXCEPTION %d. (all)", exception.exception_num);
+    tstout("FAIL: GOT EXCEPTION %d. (all)", catch.exception);
   }
 
   try {
@@ -25,10 +25,10 @@ int main(int argc,char *argv[])
     tstout("FAIL: Should not be here\n");
   }
   catch(24) {
-    tstout("PASS: GOT EXCEPTION %d from: %s:%d. ", exception.exception_num,exception.file_name, exception.line_num);
+    tstout("PASS: GOT EXCEPTION %d from: %s:%d. ", catch.exception,catch.filename, catch.line);
   }
   catch() {
-    tstout("FAIL: GOT EXCEPTION %d from: %s:%d. ", exception.exception_num,exception.file_name, exception.line_num);
+    tstout("FAIL: GOT EXCEPTION %d from: %s:%d. ", catch.exception,catch.filename, catch.line);
   }
 
   try {
@@ -36,10 +36,10 @@ int main(int argc,char *argv[])
     tstout("FAIL: Should not be here\n");
   }
   catch(24) {
-    tstout("FAIL: GOT EXCEPTION %d.", exception.exception_num);
+    tstout("FAIL: GOT EXCEPTION %d.", catch.exception);
   }
   catch() {
-    tstout("PASS: GOT DEFAULT EXCEPTION %d from: %s:%d.", exception.exception_num,exception.file_name, exception.line_num);
+    tstout("PASS: GOT DEFAULT EXCEPTION %d from: %s:%d.", catch.exception,catch.filename, catch.line);
   }
   exit(0);
 }

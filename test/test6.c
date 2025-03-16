@@ -3,7 +3,7 @@
 
 #include "trytest.h"
 
-#define exception_info int err;
+#define catch_info int err;
 
 #include "try.h"
 
@@ -39,7 +39,7 @@ int function_2(int exc)
    return exc;
 }
 
-try_t catch = 0;
+try_t trymain = 1;
 
 int main(int argc,char *argv[])
 {

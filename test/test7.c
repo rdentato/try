@@ -4,15 +4,15 @@
 #include "trytest.h"
 
 // These are the additional information you can add to an exception.
-// Define `exception_info` as a list of fields definition separated
+// Define `catch_info` as a list of fields definition separated
 // by semicolon.
-#define exception_info  int foo; char *bar;
+#define catch_info  int foo; char *bar;
 
 // The `exception` object will help you retrieving those information
 
 #include "try.h"
 
-try_t catch = 0;
+try_t trymain = 1;
   int seq = 7100;
 
 int main(int argc,char *argv[])
@@ -20,13 +20,13 @@ int main(int argc,char *argv[])
 
   try {
     int value = 71;
-    // The additiona information can be specified in the same order
+    // The additional information can be specified in the same order
     // they have been defined.
     throw(EX_OUTOFMEM, value, "NONO");
     tstout("FAIL: Shouldn't be here in try");
   }
   catch(EX_OUTOFMEM) {
-    tstout("%s: foo == %d, bar == \"%s\" risen @ %s:%d",tstpass(exception.foo == 71),exception.foo, exception.bar, exception.file_name, exception.line_num);
+    tstout("%s: foo == %d, bar == \"%s\" risen @ %s:%d",tstpass(catch.foo == 71),catch.foo, catch.bar, catch.filename, catch.line);
   }
   catch() {
     tstout("FAIL: Shouldn't be here in catch");
@@ -38,7 +38,7 @@ int main(int argc,char *argv[])
     tstout("FAIL: Shouldn't be here in try");
   }
   catch(EX_OUTOFMEM) {
-    tstout("%s: foo == %d, bar == \"%s\" risen @ %s:%d",tstpass(exception.foo == 0),exception.foo, exception.bar, exception.file_name, exception.line_num);
+    tstout("%s: foo == %d, bar == \"%s\" risen @ %s:%d",tstpass(catch.foo == 0),catch.foo, catch.bar, catch.filename, catch.line);
   }
   catch() {
     tstout("FAIL: Shouldn't be here in catch");
@@ -57,15 +57,15 @@ int main(int argc,char *argv[])
       tstout("%s: Sequnce incremented: %d", 
              tstpass(seq == 7101), seq);
       tstout("%s: Nested handler seq: %d (seq = %d)",
-             tstpass(exception.exception_num == EX_NOFILE),
-             exception.foo, seq);
+             tstpass(catch.exception == EX_NOFILE),
+             catch.foo, seq);
       rethrow(.foo=seq++);
     }
   }
   catch() {
       tstout("%s: Outer handler seq: %d",
-             tstpass(exception.foo == 7101),
-             exception.foo);
+             tstpass(catch.foo == 7101),
+             catch.foo);
   }
 
 

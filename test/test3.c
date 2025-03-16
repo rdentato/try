@@ -3,7 +3,7 @@
 
 #include "trytest.h"
 
-#define exception_info int err;
+#define catch_info int err;
 #include "try.h"
 
 
@@ -15,7 +15,7 @@ int function_1(int exc)
        tstout("FAIL: No Exception!");
      } 
      catch() {
-       tstout("PASS: Exception %d caught (err=%d)", exception.exception_num, exception.err);
+       tstout("PASS: Exception %d caught (err=%d)", catch.exception, catch.err);
      }
      tstout("PASS: Should not be re-rised");
    }
@@ -30,7 +30,7 @@ int function_2(int exc)
        tstout("FAIL: No Exception!");
      } 
      catch() {
-       tstout("PASS: Exception %d caught (err=%d)", exception.exception_num, exception.err);
+       tstout("PASS: Exception %d caught (err=%d)", catch.exception, catch.err);
        rethrow(3);
        tstout("FAIL: Should be re-rised");
      }
@@ -39,7 +39,7 @@ int function_2(int exc)
    return exc;
 }
 
-try_t catch = 0;
+try_t trymain = 1;
 
 int main(int argc,char *argv[])
 {
@@ -50,7 +50,7 @@ int main(int argc,char *argv[])
     tstout("PASS: No Exception (function return: %d)",ret);
   }
   catch() {
-    tstout("FAIL: GOT EXCEPTION %d,%d. (all)", exception.exception_num, exception.err);
+    tstout("FAIL: GOT EXCEPTION %d,%d. (all)", catch.exception, catch.err);
   }
 
   try {
@@ -58,7 +58,7 @@ int main(int argc,char *argv[])
     tstout("FAIL: No Exception (function return: %d)",ret);
   }
   catch() {
-    tstout("PASS: GOT EXCEPTION %d,%d. (all)", exception.exception_num, exception.err);
+    tstout("PASS: GOT EXCEPTION %d,%d. (all)", catch.exception, catch.err);
   }
 
   exit(0);

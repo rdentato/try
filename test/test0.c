@@ -5,7 +5,7 @@
 
 #include "try.h"
 
-try_t catch = 0;
+try_t trymain = 1;
 
 int main(int argc,char *argv[])
 {
@@ -15,7 +15,8 @@ int main(int argc,char *argv[])
     tstout("FAIL: SHOULD NOT BE HERE.");
   }
   catch(EX_NODB) {
-    tstout("FAIL: GOT EXCEPTION %d.", exception.exception_num);
+    tstout("FAIL: GOT EXCEPTION %d.", catch.exception);
   }
+  tstout("FAIL: exit cleanly!");
   exit(1);
 }

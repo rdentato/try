@@ -5,7 +5,7 @@
 
 #include "try.h"
 
-try_t catch = 0;
+try_t trymain = 1;
 
 int main(int argc,char *argv[])
 {
@@ -17,12 +17,12 @@ int main(int argc,char *argv[])
       tstout("FAIL: Should have rised an exception!");
     }
     catch() {
-      tstout("PASS: GOT EXCEPTION %d. (nested)", exception.exception_num);
+      tstout("PASS: GOT EXCEPTION %d. (nested)", catch.exception);
     }
     tstout("PASS: Try completed");
   }
   catch() {
-    tstout("FAIL: GOT EXCEPTION %d. (main)", exception.exception_num);
+    tstout("FAIL: GOT EXCEPTION %d. (main)", catch.exception);
   }
 
   try {
@@ -32,14 +32,14 @@ int main(int argc,char *argv[])
       tstout("FAIL: Should have rised an exception!");
     }
     catch() {
-      tstout("PASS: GOT EXCEPTION %d. (nested)", exception.exception_num);
+      tstout("PASS: GOT EXCEPTION %d. (nested)", catch.exception);
       rethrow();
       tstout("FAIL: Should have rised an exception!");
     }
     tstout("FAIL: Try completed?");
   }
   catch() {
-    tstout("PASS: GOT EXCEPTION %d. (main)", exception.exception_num);
+    tstout("PASS: GOT EXCEPTION %d. (main)", catch.exception);
   }
 
 

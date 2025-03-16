@@ -5,7 +5,7 @@
 #include "trytest.h"
 #include "try.h"
 
-try_t catch=0;
+try_t trymain=1;
 
 #define EX_FILE                 0x1000
 #define EX_FILE_NOT_FOUND       (EX_FILE | 0x01)
@@ -45,7 +45,7 @@ int main(int argc,char *argv[])
     tstout("FAIL: Shouldn't have caught 'EX_FILE_NOT_FOUND'");
   }
   catch(any_ex_file) {
-    tstout("PASS: Got some EX_FILE exception (%04X)",exception.exception_num);
+    tstout("PASS: Got some EX_FILE exception (%04X)",catch.exception);
   }
   catch() {
     tstout("FAIL: Shouldn't be here in catch");
@@ -62,7 +62,7 @@ try {
     tstout("FAIL: Shouldn't be here in any_ex_file");
   }
   catch() {
-    tstout("PASS: Got some non-EX_FILE exception (%04X)",exception.exception_num);
+    tstout("PASS: Got some non-EX_FILE exception (%04X)",catch.exception);
   }
 
   exit(0);

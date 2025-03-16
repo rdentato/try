@@ -8,4 +8,4 @@
 
 #include "try.h"
 
-try_t catch = 0;
+try_t trymain = 1;

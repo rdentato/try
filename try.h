@@ -13,27 +13,27 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#ifndef exception_info  // Additional fileds for the exception
-#define exception_info 
+#ifndef catch_info  // Additional fields for the exception
+#define catch_info 
 #endif
 
 typedef struct exception_s {
-   int   exception_num;
-   int   line_num;
-   char *file_name;
-   exception_info
-} exception_t;
+   int   exception;
+   int   line;
+   char *filename;
+   catch_info
+} catch_t;
 
 typedef struct try_ctx_s {                    // Context variables for a try block
                     jmp_buf  jmp_buffer;     
   volatile struct try_ctx_s *prev_ctx;        // Link to the parent context for nested try blocks
-  volatile              int  exception_num;   // Non-zero if an exception has been thrown in this context
+  volatile              int  exception;   // Non-zero if an exception has been thrown in this context
   volatile              int  caught;          // Non-zero if an exception has been caught in this context
 } try_ctx_t;
 
 // If your compiler has a different keyword for thread local variables, define TRY_THREAD 
 // before including `try.h`. Define it as empty if there is no support at all.
-//#define TRY_THREAD
+#define TRY_THREAD
 #ifndef TRY_THREAD
 #ifdef _MSC_VER
   #define TRY_THREAD __declspec( thread )
@@ -43,30 +43,39 @@ typedef struct try_ctx_s {                    // Context variables for a try blo
 #endif
 
 extern TRY_THREAD try_ctx_t  *try_ctx_list;
-extern TRY_THREAD exception_t exception;
+extern TRY_THREAD catch_t catch;
 
-// Declare only ONCE a variable of type `try_t` as if it was an int. For example: try_t catch = 0;
-#define try_t TRY_THREAD try_ctx_t *try_ctx_list=NULL; exception_t TRY_THREAD exception; int
+// Declare only ONCE a variable of type `try_t` as if it was an int. For example: try_t trymain = 1;
+#define try_t try_abort_default TRY_THREAD try_ctx_t *try_ctx_list=NULL; catch_t TRY_THREAD catch = {0}; int 
+//#define trymain TRY_THREAD try_ctx_t *try_ctx_list=NULL; catch_t TRY_THREAD catch = {0};  
+
+int try_abort();
+
+#define try_abort_default \
+    int try_abort() { \
+      fprintf(stderr,"ERROR: Unhandled exception %d. %s:%d\n",\
+      catch.exception,catch.filename,catch.line); \
+      return 1; \
+    }
 
 #ifndef tryabort
-#define tryabort() (fprintf(stderr,"ERROR: Unhandled exception %d. %s:%d\n",\
-                            exception.exception_num,exception.file_name,exception.line_num))
+#define tryabort try_abort 
 #endif
 
-static inline int try_abort() {abort(); return 1;}
-
-#define try        for ( try_ctx_t try_ctx = {.exception_num = 0, .prev_ctx = try_ctx_list, .caught = -1 }; \
-                        (try_ctx.exception_num && !try_ctx.caught)   ? \
-                                           (tryabort(), try_abort()) : \
+#define try        for ( try_ctx_t try_ctx = {.exception = 0, .prev_ctx = try_ctx_list, .caught = -1 }; \
+                        (try_ctx.exception && !try_ctx.caught)   ? \
+                                           (tryabort() && catch_abort()) : \
                                            ((try_ctx.caught++ < 0) && (try_ctx_list = &try_ctx)); \
                          try_ctx_list = (try_ctx_t *)(try_ctx.prev_ctx)) \
                      if (setjmp(try_ctx.jmp_buffer) == 0) 
 
 #define catch(...)   else if (catch__check(__VA_ARGS__ +0) && catch__caught()) 
 
+static inline int catch_abort() {abort(); return 1;}
+
 // The argument to `catch()` can be an integer or a function from integers to integers
-#define catch__check(x) _Generic((x), int(*)(int): (((int(*)(int))(x)) == NULL) || ((int(*)(int))(x))(try_ctx.exception_num), \
-                                          default: ((int)((uintptr_t)(x)) == 0) || catch__eq((int)((uintptr_t)(x)),try_ctx.exception_num) )
+#define catch__check(x) _Generic((x), int(*)(int): (((int(*)(int))(x)) == NULL) || ((int(*)(int))(x))(try_ctx.exception), \
+                                          default: ((int)((uintptr_t)(x)) == 0) || catch__eq((int)((uintptr_t)(x)),try_ctx.exception) )
 
 static inline int catch__eq(int x, int e) {return x == e;}
 
@@ -76,16 +85,16 @@ static inline int catch__eq(int x, int e) {return x == e;}
 // To be consistent with setjmp/longjmp behaviour, if `exc` is 0, it is set to 1.
 #define throw(exc, ...) \
   do { \
-    memset(&exception,0,sizeof(exception_t)); \
-    exception = ((exception_t){exc, __LINE__, __FILE__, __VA_ARGS__});\
-    if (exception.exception_num == 0) exception.exception_num = 1; \
-    if (try_ctx_list == NULL) { tryabort(); abort(); } \
-    try_ctx_list->exception_num = exception.exception_num; \
-    longjmp(try_ctx_list->jmp_buffer, exception.exception_num); \
+    memset(&catch,0,sizeof(catch_t)); \
+    catch = ((catch_t){exc, __LINE__, __FILE__, __VA_ARGS__});\
+    if (catch.exception == 0) catch.exception = 1; \
+    if (try_ctx_list == NULL) { if (tryabort(&catch)) abort(); } \
+    try_ctx_list->exception = catch.exception; \
+    longjmp(try_ctx_list->jmp_buffer, catch.exception); \
   } while(0)
 
 // Pass the same exception to parent try/catch block
-#define rethrow(...) throw(try_ctx.exception_num, __VA_ARGS__)
+#define rethrow(...) throw(try_ctx.exception, __VA_ARGS__)
 
 // Quit a try/block in a clean way
 #define leave() continue

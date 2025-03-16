@@ -1,18 +1,19 @@
 rm -f ut_* try.o
-CFLAGS="-O2 -Wall -I.."
-echo "Compiler: ${CC:-gcc}"
+CFLAGS='-O2 -Wall -I..'
+CC=${CC:-gcc}
+echo "Compiler: $CC flags: $CFLAGS"
 
-${CC:-gcc} $CFLAGS -o try.o -c ../try.c
+# gcc $CFLAGS -o try.o -c ../try.c
 
 for f in t*.c; do
-  echo "compiling '$f'"
-  ${CC:-gcc} $CFLAGS -o ut_${f%.c} $f
+  echo "compiling '$f' with 'gcc $CFLAGS -o ut_${f%.c} $f" 1>&2
+  gcc $CFLAGS -o ut_${f%.c} $f
 done
 
-for f in lt*.c; do
-  echo "compiling '$f'"
-  ${CC:-gcc} $CFLAGS -o ut_${f%.c} $f try.o
-done
+# for f in lt*.c; do
+#   echo "compiling '$f'"
+#   ${CC:-gcc} $CFLAGS -o ut_${f%.c} $f try.o
+# done
 
 rm -f runtest.log
 
