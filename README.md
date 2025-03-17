@@ -94,7 +94,9 @@ See the tests in the `test` directory for some example.
      // The specified function (with signature int f(int x)) is
      // called passing the exception number as the argument.
      // The block of code is executed if the functions returns 
-     // a non-zero value
+     // a non-zero value. If 0 is returned the exception is 
+     // not cought. This can be useful, for example, to handle a
+     // group of exceptions all together.
      ... do something ...
   }
   catch() { // nothing
