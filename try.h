@@ -4,8 +4,8 @@
 **  Discord server: https://discord.gg/QFzP9vaR8j
 */
 
-#ifndef TRY_VERSION // 0.3.3-rc
-#define TRY_VERSION    0x0003003C
+#ifndef TRY_VERSION // 0.4.1-rc
+#define TRY_VERSION    0x0004001C
 
 #include <stdio.h>
 #include <setjmp.h>
