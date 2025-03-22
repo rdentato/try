@@ -69,15 +69,11 @@ int try_abort();
                          try_ctx_list = (try_ctx_t *)(try_ctx.prev_ctx)) \
                      if (setjmp(try_ctx.jmp_buffer) == 0) 
 
-#define catch(...)   else if (catch__check(__VA_ARGS__ +0) && catch__caught()) 
+#define catch(...)   else if (catch__check(__VA_ARGS__ +0, try_ctx.exception) && catch__caught()) 
 
 static inline int catch_abort() {abort(); return 1;}
 
-// The argument to `catch()` can be an integer or a function from integers to integers
-#define catch__check(x) _Generic((x), int(*)(int): (((int(*)(int))(x)) == NULL) || ((int(*)(int))(x))(try_ctx.exception), \
-                                          default: ((int)((uintptr_t)(x)) == 0) || catch__eq((int)((uintptr_t)(x)),try_ctx.exception) )
-
-static inline int catch__eq(int x, int e) {return x == e;}
+static inline int catch__check(int x, int e) {return (x == 0) || (x == e);}
 
 #define catch__caught() (try_ctx_list=(try_ctx_t *)(try_ctx.prev_ctx),try_ctx.caught=1)
 

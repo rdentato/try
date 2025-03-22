@@ -90,20 +90,13 @@ See the tests in the `test` directory for some example.
      if (something) leave(); // Only exit via `leave()`
      ... do something else ...
   }
-  catch(check_function) { // a function `int f(int)`
-     // The specified function (with signature int f(int x)) is
-     // called passing the exception number as the argument.
-     // The block of code is executed if the functions returns 
-     // a non-zero value. If 0 is returned the exception is 
-     // not cought. This can be useful, for example, to handle a
-     // group of exceptions all together.
-     ... do something ...
-  }
   catch() { // nothing
      // Block of code that is executed if no other handler
      // catches the exception. It is highly reccomended to 
      // ALWAYS have a catch() block; unhandled exceptions
      // will make the program abort().
+     // Another use of default handler could be, for example,
+     // To process a group of exceptions all together.
   }
 ```
 Remember to never leave a try/catch block with return, goto or break!
@@ -168,5 +161,3 @@ It will move you to the end of the try/catch block.
 
 
 ```
-
-

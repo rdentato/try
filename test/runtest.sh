@@ -6,8 +6,8 @@ echo "Compiler: $CC flags: $CFLAGS"
 # gcc $CFLAGS -o try.o -c ../try.c
 
 for f in t*.c; do
-  echo "compiling '$f' with 'gcc $CFLAGS -o ut_${f%.c} $f" 1>&2
-  gcc $CFLAGS -o ut_${f%.c} $f
+  echo "compiling '$f' with '$CC $CFLAGS -o ut_${f%.c} $f'" 1>&2
+  $CC $CFLAGS -o ut_${f%.c} $f
 done
 
 # for f in lt*.c; do
