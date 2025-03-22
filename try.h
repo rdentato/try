@@ -31,14 +31,17 @@ typedef struct try_ctx_s {                    // Context variables for a try blo
   volatile              int  caught;          // Non-zero if an exception has been caught in this context
 } try_ctx_t;
 
-// Default is to set TRY_THREAD as empty empty assuming that it won't be used in threaded applications.
+// If your application uses threads, define `TRY_USE_THREADS` before including `try.h`. 
+// If your compiler uses a different syntax to indicate thread-local variables, define `TRY_THREAD` accordingly.
 #ifndef TRY_USE_THREADS
   #define TRY_THREAD
 #else
-  #ifdef _MSC_VER
-    #define TRY_THREAD __declspec( thread )
-  #else
-    #define TRY_THREAD __thread
+  #ifndef TRY_THREAD
+    #ifdef _MSC_VER
+      #define TRY_THREAD __declspec( thread )
+    #else
+      #define TRY_THREAD __thread
+    #endif
   #endif
 #endif
 
