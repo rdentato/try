@@ -65,12 +65,12 @@ int try_abort();
 #define tryabort try_abort 
 #endif
 
-#define try        for ( try_ctx_t try_ctx = {.exception = 0, .prev_ctx = try_ctx_list, .caught = -1 }; \
-                        (try_ctx.exception && !try_ctx.caught)   ? \
-                                           (tryabort() && catch_abort()) : \
-                                           ((try_ctx.caught++ < 0) && (try_ctx_list = &try_ctx)); \
-                         try_ctx_list = (try_ctx_t *)(try_ctx.prev_ctx)) \
-                     if (setjmp(try_ctx.jmp_buffer) == 0) 
+#define try  for ( try_ctx_t try_ctx = {.exception = 0, .prev_ctx = try_ctx_list, .caught = -1 }; \
+                  (try_ctx.exception && !try_ctx.caught)   ? \
+                                     (tryabort() && catch_abort()) : \
+                                     ((try_ctx.caught++ < 0) && (try_ctx_list = &try_ctx)); \
+                   try_ctx_list = (try_ctx_t *)(try_ctx.prev_ctx)) \
+               if (setjmp(try_ctx.jmp_buffer) == 0) 
 
 #define catch(...)   else if (catch__check(__VA_ARGS__ +0, try_ctx.exception) && catch__caught()) 
 
